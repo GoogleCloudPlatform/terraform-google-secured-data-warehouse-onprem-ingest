@@ -18,7 +18,7 @@ output "project_id" {
   value = module.project.project_id
 }
 
-output "backend_bucket" {
+output "bucket_name" {
   value = "bkt-ci-tst-${module.project.project_id}"
 }
 
