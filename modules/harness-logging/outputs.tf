@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
+output "log_sinks" {
+  description = "The list of log sinks created."
+  value = toset([
+    for value in module.log_export : value
+  ])
+}
 
-  required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "3.2.1"
-    }
-  }
+output "logging_bucket_name" {
+  description = "The name of the bucket that will store the exported logs."
+  value       = local.bucket_name
 }

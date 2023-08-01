@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
-
-  required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "3.2.1"
-    }
-  }
+output "bigquery_dataset" {
+  description = "The Dataset ID for the BigQuery dataset created."
+  value       = module.bigquery_data.bigquery_dataset
 }

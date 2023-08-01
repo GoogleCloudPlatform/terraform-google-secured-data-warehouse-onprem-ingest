@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
+output "template_gs_path" {
+  description = "The path to the Dataflow Flex template save in the Cloud Storage bucket."
+  value       = local.template_gs_path
 
-  required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "3.2.1"
-    }
-  }
+  depends_on = [
+    null_resource.python_pubsub_dataflow_bq_flex_template
+  ]
 }
