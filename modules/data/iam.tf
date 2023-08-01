@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
+locals {
+  project_roles = [
+    "roles/bigquery.dataEditor",
+    "roles/bigquery.metadataViewer"
+  ]
+}
 
-  required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "3.2.1"
-    }
-  }
+resource "google_project_iam_member" "dataflow_controller_sa" {
+  for_each = toset(local.project_roles)
+
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${var.dataflow_controller_service_account_email}"
 }
