@@ -75,7 +75,7 @@ module "log_export" {
 
   destination_uri        = local.destination_uri
   filter                 = var.sink_filter
-  log_sink_name          = "sk-dwh-logging-bkt"
+  log_sink_name          = "sk-sdw-logging-bkt"
   parent_resource_id     = each.value
   parent_resource_type   = "project"
   unique_writer_identity = true
