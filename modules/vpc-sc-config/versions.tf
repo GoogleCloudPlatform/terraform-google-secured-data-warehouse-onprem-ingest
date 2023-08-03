@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,35 @@
  * limitations under the License.
  */
 
-module "secured_data_warehouse_onprem_ingest" {
-  source = "../.."
+terraform {
+  required_version = ">= 0.13"
 
-  project_id  = var.project_id
-  bucket_name = var.bucket_name
+  required_providers {
+
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 4.61.0, < 5.0"
+    }
+
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "< 5.0"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.1"
+    }
+
+    time = {
+      source  = "hashicorp/time"
+      version = "0.9.1"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "3.5.1"
+    }
+
+  }
 }

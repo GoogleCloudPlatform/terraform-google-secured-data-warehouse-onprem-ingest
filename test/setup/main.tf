@@ -27,6 +27,30 @@ module "project" {
   activate_apis = [
     "cloudresourcemanager.googleapis.com",
     "storage-api.googleapis.com",
-    "serviceusage.googleapis.com"
+    "serviceusage.googleapis.com",
+    "iam.googleapis.com",
+    "dns.googleapis.com",
+    "pubsub.googleapis.com",
+    "bigquery.googleapis.com",
+    "accesscontextmanager.googleapis.com",
+    "cloudbilling.googleapis.com",
+    "cloudkms.googleapis.com",
+    "dataflow.googleapis.com",
+    "dlp.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "compute.googleapis.com",
+    "secretmanager.googleapis.com",
+    "datacatalog.googleapis.com"
   ]
+}
+
+resource "random_id" "folder-rand" {
+  byte_length = 2
+}
+
+resource "google_folder" "int_test" {
+  display_name = "ci-dwt-${random_id.folder-rand.hex}"
+  parent       = "folders/${var.folder_id}"
 }

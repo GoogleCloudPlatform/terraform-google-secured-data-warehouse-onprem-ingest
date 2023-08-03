@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,20 @@
  * limitations under the License.
  */
 
-output "bucket_name" {
-  description = "The name of the bucket."
-  value       = module.secured_data_warehouse_onprem_ingest.bucket_name
+output "access_level_name" {
+  description = "The access level name for the Access Context Manager."
+  value       = module.access_level_policy.name
+
+  depends_on = [
+    time_sleep.wait_for_vpc_sc_propagation
+  ]
+}
+
+output "service_perimeter_name" {
+  description = "The service perimeter name for the Access Context Manager."
+  value       = local.regular_service_perimeter_name
+
+  depends_on = [
+    time_sleep.wait_for_vpc_sc_propagation
+  ]
 }

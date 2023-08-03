@@ -18,6 +18,29 @@ locals {
   int_required_roles = [
     "roles/owner"
   ]
+
+  int_org_required_roles = [
+    "roles/orgpolicy.policyAdmin",
+    "roles/accesscontextmanager.policyAdmin",
+    "roles/resourcemanager.organizationAdmin",
+    "roles/billing.user"
+  ]
+
+  folder_required_roles = [
+    "roles/resourcemanager.folderAdmin",
+    "roles/resourcemanager.projectCreator",
+    "roles/resourcemanager.projectDeleter",
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/compute.xpnAdmin",
+    "roles/compute.networkAdmin",
+    "roles/cloudkms.cryptoOperator",
+    "roles/vpcaccess.admin",
+    "roles/logging.admin",
+    "roles/iam.serviceAccountTokenCreator",
+    "roles/iam.serviceAccountAdmin",
+    "roles/serviceusage.serviceUsageAdmin",
+  ]
+
 }
 
 resource "google_service_account" "int_test" {
@@ -26,12 +49,45 @@ resource "google_service_account" "int_test" {
   display_name = "ci-account"
 }
 
+resource "google_organization_iam_member" "int_test" {
+  for_each = toset(local.int_org_required_roles)
+  org_id   = var.org_id
+  role     = each.value
+  member   = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_folder_iam_member" "int_test" {
+  for_each = toset(local.folder_required_roles)
+
+  folder = google_folder.int_test.id
+  role   = each.value
+  member = "serviceAccount:${google_service_account.int_test.email}"
+}
+
 resource "google_project_iam_member" "int_test" {
   for_each = toset(local.int_required_roles)
 
   project = module.project.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_billing_account_iam_member" "int_test" {
+  billing_account_id = var.billing_account
+  role               = "roles/billing.user"
+  member             = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_service_account_iam_member" "cloud_build_impersonation" {
+  service_account_id = google_service_account.int_test.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${var.build_project_number}@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_service_account_iam_member" "self_impersonation" {
+  service_account_id = google_service_account.int_test.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.int_test.email}"
 }
 
 resource "google_service_account_key" "int_test" {
