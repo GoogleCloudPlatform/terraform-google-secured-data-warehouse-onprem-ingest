@@ -13,9 +13,18 @@ and to overcome typical challenges that include:
 - Regulatory and compliance approval from external auditors.
 
 The Terraform configurations in this repository provide customers with an opinionated architecture
-that incorporates and documents best practices for a performant and scalable design, combined with
-security by default for control, logging and evidence generation. It can be simply deployed by
+that incorporates and documents best practices for importing data into BigQuery from an external network such as an on-premises environment, 
+performant and scalable design, combined with security by default for control, logging and evidence generation. It can be simply deployed by
 customers through a Terraform workflow.
+
+In this blueprint, you do the following:
+
+- Encrypt your source data that's located outside of Google Cloud (for example, in an on-premises environment) and import it into BigQuery.
+- Configure controls that help secure access to confidential data.
+- Configure controls that help secure the data pipeline.
+- Configure an appropriate separation of duties for different personas.
+- Set up appropriate security controls and logging to help protect confidential data.
+- Use data classification, policy tags, dynamic data masking, and column-level encryption to restrict access to specific columns in the data warehouse.
 
 ## Disclaimer
 
