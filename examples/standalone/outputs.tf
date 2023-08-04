@@ -113,3 +113,70 @@ output "data_ingestion_subnets_self_link" {
   description = "The self-links of data ingestion subnets being created."
   value       = module.harness_projects.data_ingestion_subnets_self_link
 }
+
+output "kek_wrapping_keyring" {
+  description = "The kek wrapping keyring."
+  value       = module.kek_wrapping_key.keyring
+}
+
+output "kek_wrapping_key" {
+  description = "The kek wrapping key."
+  value       = module.kek_wrapping_key.keys[local.kek_key_name]
+}
+
+output "kek_wrapping_keyring_name" {
+  description = "The name of kek wrapping keyring."
+  value       = local.kek_keyring
+}
+
+output "kek_wrapping_key_name" {
+  description = "The name of kek wrapping key."
+  value       = local.kek_key_name
+}
+
+output "csv_load_job_id" {
+  description = "The ID of the BigQuery Job to upload the csv file."
+  value       = local.csv_load_job_id
+}
+
+output "function_id" {
+  description = "An identifier for the Cloud Function resource."
+  value       = google_cloudfunctions2_function.function.id
+}
+
+output "dlp_job_name" {
+  description = "The resource name of the job trigger."
+  value       = module.dlp_scanner.dlp_job_trigger_name
+}
+
+output "dlp_job_id" {
+  description = "The identifier ID for the job trigger."
+  value       = module.dlp_scanner.dlp_job_trigger_id
+}
+
+output "bigquery_job_id" {
+  description = "The Bigquery job ID used to load .csv file."
+  value       = google_bigquery_job.load_job.id
+}
+
+output "random_suffix" {
+  description = "Suffix used in the name of resources."
+  value       = random_string.suffix.result
+}
+
+output "taxonomy_name" {
+  description = "The taxonomy name."
+  value       = google_data_catalog_taxonomy.secure_taxonomy.name
+}
+
+output "taxonomy_display_name" {
+  description = "The name of the taxonomy."
+  value       = google_data_catalog_taxonomy.secure_taxonomy.display_name
+}
+
+output "subscription_names" {
+  description = "The name list of Pub/Sub subscriptions"
+  value = concat(
+    module.pubsub_to_bigquery.subscription_names
+  )
+}

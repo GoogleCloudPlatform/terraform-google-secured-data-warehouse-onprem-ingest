@@ -74,5 +74,47 @@ output "terraform_service_account" {
   value       = var.terraform_service_account
 }
 
+output "function_id" {
+  description = "An identifier for the Cloud Function resource."
+  value       = module.example.function_id
+}
 
+output "kek_wrapping_keyring" {
+  description = "The kek wrapping keyring."
+  value       = module.example.kek_wrapping_keyring
+}
 
+output "kek_wrapping_keyring_name" {
+  description = "The name of kek wrapping keyring."
+  value       = module.example.kek_wrapping_keyring_name
+}
+
+output "kek_wrapping_key_name" {
+  description = "The name of kek wrapping key."
+  value       = module.example.kek_wrapping_key_name
+}
+
+output "csv_load_job_id" {
+  description = "The ID of the BigQuery Job to upload the csv file."
+  value       = module.example.csv_load_job_id
+}
+
+output "dlp_job_name" {
+  description = "The resource name of the job trigger."
+  value       = module.example.dlp_job_name
+}
+
+output "dlp_job_id" {
+  description = "The identifier ID for the job trigger."
+  value       = module.example.dlp_job_id
+}
+
+output "bigquery_job_id" {
+  description = "The Bigquery job ID used to load .csv file."
+  value       = module.example.bigquery_job_id
+}
+
+output "taxonomy_name" {
+  description = "The taxonomy name."
+  value       = module.example.taxonomy_name
+}

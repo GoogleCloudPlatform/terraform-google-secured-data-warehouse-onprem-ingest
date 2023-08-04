@@ -1,0 +1,6 @@
+    SELECT
+      Card_Type_Code,
+      Issuing_Bank,
+      Card_Number,
+      `${decrypt_function}`(Card_Number) AS Card_Number_Decrypted
+    FROM `${full_table_id}`
