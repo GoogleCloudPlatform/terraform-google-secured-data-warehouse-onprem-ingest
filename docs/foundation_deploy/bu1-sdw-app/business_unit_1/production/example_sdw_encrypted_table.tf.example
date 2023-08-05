@@ -1,0 +1,388 @@
+/**
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+locals {
+  plaintext_reader_group      = data.terraform_remote_state.projects_env.outputs.plaintext_reader_group
+  encrypted_data_reader_group = data.terraform_remote_state.projects_env.outputs.encrypted_data_reader_group
+  data_analyst_group          = data.terraform_remote_state.projects_env.outputs.data_analyst_group
+
+  data_ingestion_project_id      = data.terraform_remote_state.projects_env.outputs.data_ingestion_project_id
+  cmek_data_ingestion_crypto_key = data.terraform_remote_state.projects_env.outputs.cmek_data_ingestion_crypto_key
+
+  data_governance_project_id = data.terraform_remote_state.projects_env.outputs.data_governance_project_id
+  data_project_id            = data.terraform_remote_state.projects_env.outputs.data_project_id
+  data_ingestion_bucket_name = data.terraform_remote_state.projects_env.outputs.data_ingestion_bucket_name
+  location                   = data.terraform_remote_state.projects_env.outputs.default_region
+  kek_wrapping_key           = data.terraform_remote_state.sdw_shared.outputs.kek_wrapping_key
+
+  masked_reader_groups = {
+    data_analyst     = local.data_analyst_group
+    encrypted_data   = local.encrypted_data_reader_group
+    plaintext_reader = local.plaintext_reader_group
+  }
+
+  keyset_file_name    = "keyset.json"
+  encrypted_file_name = "encrypted.csv"
+
+  dataset_id            = "data_dataset"
+  table_id              = "credit_card"
+  decrypt_function_id   = "decrypt"
+  taxonomy_name         = "secured_taxonomy"
+  taxonomy_display_name = "${local.taxonomy_name}-${random_string.suffix.result}"
+
+  sensitive_tags = {
+    credit_limit = {
+      display_name = "CREDIT_LIMIT"
+      description  = "Credit allowed to individual."
+    }
+    card_type_full_name = {
+      display_name = "CARD_TYPE_FULL_NAME"
+      description  = "Credit card type full name."
+    }
+    card_type_code = {
+      display_name = "CARD_TYPE_CODE"
+      description  = "Credit card type code."
+    }
+  }
+}
+
+// remote state
+data "terraform_remote_state" "projects_env" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/projects/business_unit_1/production"
+  }
+}
+
+data "terraform_remote_state" "sdw_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.sdw_remote_state_bucket
+    prefix = "terraform/sdw/business_unit_1/shared"
+  }
+}
+
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
+// encrypted table example
+data "external" "dek_wrapped_key" {
+  program = [
+    "/bin/bash", "${path.module}/helpers/read_key.sh"
+  ]
+
+  query = {
+    key_file = "${abspath(path.module)}/${local.keyset_file_name}"
+  }
+}
+
+resource "google_data_catalog_taxonomy" "secure_taxonomy" {
+  provider = google-beta
+
+  project                = local.data_governance_project_id
+  region                 = local.location
+  display_name           = local.taxonomy_display_name
+  description            = "Taxonomy created for Sample Sensitive Data"
+  activated_policy_types = ["FINE_GRAINED_ACCESS_CONTROL"]
+}
+
+resource "google_data_catalog_policy_tag" "policy_tag_sensitive" {
+  provider = google-beta
+
+  taxonomy     = google_data_catalog_taxonomy.secure_taxonomy.id
+  display_name = "1_Sensitive"
+  description  = "Data not meant to be public."
+}
+
+resource "google_data_catalog_policy_tag" "sensitive_tags" {
+  provider = google-beta
+  for_each = local.sensitive_tags
+
+  taxonomy          = google_data_catalog_taxonomy.secure_taxonomy.id
+  display_name      = each.value["display_name"]
+  description       = each.value["description"]
+  parent_policy_tag = google_data_catalog_policy_tag.policy_tag_sensitive.id
+}
+
+resource "google_bigquery_datapolicy_data_policy" "credit_limit" {
+  provider = google-beta
+
+  project          = local.data_governance_project_id
+  location         = local.location
+  data_policy_id   = "credit_limit"
+  policy_tag       = google_data_catalog_policy_tag.sensitive_tags["credit_limit"].name
+  data_policy_type = "DATA_MASKING_POLICY"
+
+  data_masking_policy {
+    predefined_expression = "DEFAULT_MASKING_VALUE"
+  }
+}
+
+resource "google_bigquery_datapolicy_data_policy_iam_member" "credit_limit" {
+  provider = google-beta
+  for_each = local.masked_reader_groups
+
+  project        = google_bigquery_datapolicy_data_policy.credit_limit.project
+  location       = google_bigquery_datapolicy_data_policy.credit_limit.location
+  data_policy_id = google_bigquery_datapolicy_data_policy.credit_limit.data_policy_id
+  role           = "roles/bigquerydatapolicy.maskedReader"
+  member         = "group:${each.value}"
+}
+
+resource "google_bigquery_datapolicy_data_policy" "card_type_full_name" {
+  provider = google-beta
+
+  project          = local.data_governance_project_id
+  location         = local.location
+  data_policy_id   = "card_type_full_name"
+  policy_tag       = google_data_catalog_policy_tag.sensitive_tags["card_type_full_name"].name
+  data_policy_type = "DATA_MASKING_POLICY"
+
+  data_masking_policy {
+    predefined_expression = "DEFAULT_MASKING_VALUE"
+  }
+}
+
+resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_full_name" {
+  provider = google-beta
+  for_each = local.masked_reader_groups
+
+  project        = google_bigquery_datapolicy_data_policy.card_type_full_name.project
+  location       = google_bigquery_datapolicy_data_policy.card_type_full_name.location
+  data_policy_id = google_bigquery_datapolicy_data_policy.card_type_full_name.data_policy_id
+  role           = "roles/bigquerydatapolicy.maskedReader"
+  member         = "group:${each.value}"
+}
+
+resource "google_bigquery_datapolicy_data_policy" "card_type_code" {
+  provider = google-beta
+
+  project          = local.data_governance_project_id
+  location         = local.location
+  data_policy_id   = "card_type_code"
+  policy_tag       = google_data_catalog_policy_tag.sensitive_tags["card_type_code"].name
+  data_policy_type = "DATA_MASKING_POLICY"
+
+  data_masking_policy {
+    predefined_expression = "DEFAULT_MASKING_VALUE"
+  }
+}
+
+resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_code_member" {
+  provider = google-beta
+  for_each = local.masked_reader_groups
+
+  project        = google_bigquery_datapolicy_data_policy.card_type_code.project
+  location       = google_bigquery_datapolicy_data_policy.card_type_code.location
+  data_policy_id = google_bigquery_datapolicy_data_policy.card_type_code.data_policy_id
+  role           = "roles/bigquerydatapolicy.maskedReader"
+  member         = "group:${each.value}"
+}
+
+data "google_bigquery_default_service_account" "bq_sa" {
+  project = local.data_project_id
+}
+
+resource "google_data_catalog_taxonomy_iam_binding" "bq_binding" {
+  provider = google-beta
+
+  project  = local.data_governance_project_id
+  taxonomy = google_data_catalog_taxonomy.secure_taxonomy.name
+  role     = "roles/datacatalog.categoryFineGrainedReader"
+  members = [
+    "serviceAccount:${data.google_bigquery_default_service_account.bq_sa.email}",
+    "group:${local.plaintext_reader_group}"
+  ]
+}
+
+resource "google_storage_bucket_object" "csv" {
+  name   = local.encrypted_file_name
+  source = "${abspath(path.module)}/${local.encrypted_file_name}"
+  bucket = local.data_ingestion_bucket_name
+}
+
+resource "google_bigquery_table" "credit_card" {
+  dataset_id          = local.dataset_id
+  project             = local.data_project_id
+  table_id            = local.table_id
+  friendly_name       = local.table_id
+  deletion_protection = false
+
+  schema = templatefile("${path.module}/templates/schema.template",
+    {
+      pt_credit_limit        = google_data_catalog_policy_tag.sensitive_tags["credit_limit"].id
+      pt_card_type_full_name = google_data_catalog_policy_tag.sensitive_tags["card_type_full_name"].id
+      pt_card_type_code      = google_data_catalog_policy_tag.sensitive_tags["card_type_code"].id
+    }
+  )
+
+  lifecycle {
+    ignore_changes = [
+      encryption_configuration # managed by the dataset default_encryption_configuration.
+    ]
+  }
+}
+
+resource "google_bigquery_job" "load_job" {
+  job_id   = "job_load_csv_${random_string.suffix.result}"
+  project  = local.data_project_id
+  location = local.location
+
+  labels = {
+    "type" = "csv_load_data"
+  }
+
+  load {
+    source_uris = [
+      "gs://${local.data_ingestion_bucket_name}/${google_storage_bucket_object.csv.name}"
+    ]
+
+    destination_table {
+      project_id = local.data_project_id
+      dataset_id = local.dataset_id
+      table_id   = google_bigquery_table.credit_card.id
+    }
+
+    skip_leading_rows     = 1
+    schema_update_options = ["ALLOW_FIELD_RELAXATION", "ALLOW_FIELD_ADDITION"]
+
+    write_disposition = "WRITE_APPEND"
+    autodetect        = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      load[0].destination_encryption_configuration # managed by the dataset default_encryption_configuration.
+    ]
+  }
+
+  depends_on = [
+    google_storage_bucket_object.csv,
+    google_bigquery_table.credit_card,
+  ]
+}
+
+data "template_file" "decrypt_function" {
+  template = file("${path.module}/templates/decrypt_function.sql")
+  vars = {
+    kms_resource_name  = "gcp-kms://${local.kek_wrapping_key}"
+    binary_wrapped_key = data.external.dek_wrapped_key.result.encryptedKeyset
+  }
+}
+
+resource "google_bigquery_routine" "decrypt_function" {
+  project         = local.data_project_id
+  dataset_id      = local.dataset_id
+  routine_id      = local.decrypt_function_id
+  routine_type    = "SCALAR_FUNCTION"
+  language        = "SQL"
+  definition_body = data.template_file.decrypt_function.rendered
+
+  arguments {
+    name      = "encodedText"
+    data_type = "{\"typeKind\" :  \"STRING\"}"
+  }
+
+  return_type = "{\"typeKind\" :  \"STRING\"}"
+}
+
+data "template_file" "decrypted_view" {
+  template = file("${path.module}/templates/decrypted_view.template")
+  vars = {
+    decrypt_function = "${local.dataset_id}.${local.decrypt_function_id}"
+    full_table_id    = "${local.data_project_id}.${local.dataset_id}.${local.table_id}"
+  }
+}
+
+resource "google_bigquery_table_iam_member" "encrypted_credit_card_data_viewer" {
+  project    = local.data_project_id
+  dataset_id = local.dataset_id
+  table_id   = google_bigquery_table.credit_card.table_id
+  role       = "roles/bigquery.dataViewer"
+  member     = "group:${local.encrypted_data_reader_group}"
+}
+
+
+resource "google_bigquery_table_iam_member" "plaintext_credit_card_data_viewer" {
+  project    = local.data_project_id
+  dataset_id = local.dataset_id
+  table_id   = google_bigquery_table.credit_card.table_id
+  role       = "roles/bigquery.dataViewer"
+  member     = "group:${local.plaintext_reader_group}"
+}
+
+resource "google_bigquery_table" "credit_card_decrypted_view" {
+  project             = local.data_project_id
+  dataset_id          = local.dataset_id
+  table_id            = "decrypted_view"
+  deletion_protection = false
+
+  view {
+    query          = data.template_file.decrypted_view.rendered
+    use_legacy_sql = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      encryption_configuration # managed by the dataset default_encryption_configuration.
+    ]
+  }
+
+  depends_on = [
+    google_bigquery_job.load_job,
+    google_bigquery_routine.decrypt_function,
+    google_bigquery_table.credit_card
+  ]
+}
+
+resource "google_bigquery_table_iam_member" "dataViewer" {
+  project    = local.data_project_id
+  dataset_id = local.dataset_id
+  table_id   = google_bigquery_table.credit_card_decrypted_view.table_id
+  role       = "roles/bigquery.dataViewer"
+  member     = "group:${local.plaintext_reader_group}"
+}
+
+module "pubsub_to_bigquery" {
+  source  = "terraform-google-modules/pubsub/google"
+  version = "~> 5.0"
+
+  project_id         = local.data_ingestion_project_id
+  topic              = "pubsub_to_bigquery_topic"
+  topic_kms_key_name = local.cmek_data_ingestion_crypto_key
+  create_topic       = true
+
+  schema = {
+    name       = "pubsub_to_bigquery_schema"
+    type       = "AVRO"
+    encoding   = "JSON"
+    definition = file("${path.module}/templates/avro.schema.template")
+  }
+
+  bigquery_subscriptions = [
+    {
+      name             = "pubsub_to_bigquery_subscription"
+      table            = "${local.data_project_id}:${local.dataset_id}.${local.table_id}"
+      use_topic_schema = true
+    }
+  ]
+}
