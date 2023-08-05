@@ -17,6 +17,6 @@
 terraform {
   backend "gcs" {
     bucket = "UPDATE_APP_INFRA_SDW_BUCKET"
-    prefix = "terraform/dwh/business_unit_1/shared"
+    prefix = "terraform/sdw/business_unit_1/shared"
   }
 }
