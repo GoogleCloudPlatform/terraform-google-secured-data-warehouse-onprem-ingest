@@ -1,0 +1,50 @@
+{
+    "type": "record",
+    "name": "Avro",
+    "fields": [
+        {
+            "name": "Card_Type_Code",
+            "type": "string"
+        },
+        {
+            "name": "Card_Type_Full_Name",
+            "type": "string"
+        },
+        {
+            "name": "Issuing_Bank",
+            "type": "string"
+        },
+        {
+            "name": "Card_Number",
+            "type": "string"
+        },
+        {
+            "name": "Card_Holders_Name",
+            "type": "string"
+        },
+        {
+            "name": "CVV_CVV2",
+            "type": "string"
+        },
+        {
+            "name": "Issue_Date",
+            "type": "string"
+        },
+        {
+            "name": "Expiry_Date",
+            "type": "string"
+        },
+        {
+            "name": "Billing_Date",
+            "type": "string"
+        },
+        {
+            "name": "Card_PIN",
+            "type": "string"
+        },
+        {
+            "name": "Credit_Limit",
+            "type": "string"
+        }
+    ]
+}

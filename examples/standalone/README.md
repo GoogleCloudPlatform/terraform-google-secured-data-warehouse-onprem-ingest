@@ -457,10 +457,12 @@ These outputs can be interesting for security analyst group:
 
 | Name | Description |
 |------|-------------|
+| bigquery\_job\_id | The Bigquery job ID used to load .csv file. |
 | centralized\_logging\_bucket\_name | The name of the bucket created for storage logging. |
 | cmek\_data\_bigquery\_crypto\_key | The Customer Managed Crypto Key for the BigQuery service. |
 | cmek\_data\_ingestion\_crypto\_key | The Customer Managed Crypto Key for the data ingestion crypto boundary. |
 | cmek\_keyring\_name | The Keyring name for the KMS Customer Managed Encryption Keys. |
+| csv\_load\_job\_id | The ID of the BigQuery Job to upload the csv file. |
 | data\_governance\_perimeter\_name | Access context manager service perimeter name. |
 | data\_governance\_project\_id | The ID of the project created for data governance. |
 | data\_ingestion\_bucket\_name | The name of the bucket created for the data ingestion pipeline. |
@@ -474,8 +476,19 @@ These outputs can be interesting for security analyst group:
 | data\_perimeter\_name | Access context manager service perimeter name. |
 | data\_project\_id | The ID of the project created for datasets and tables. |
 | dataflow\_controller\_service\_account\_email | The Dataflow controller service account email. Required to deploy Dataflow jobs. See https://cloud.google.com/dataflow/docs/concepts/security-and-permissions#specifying_a_user-managed_controller_service_account. |
+| dlp\_job\_id | The identifier ID for the job trigger. |
+| dlp\_job\_name | The resource name of the job trigger. |
+| function\_id | An identifier for the Cloud Function resource. |
+| kek\_wrapping\_key | The kek wrapping key. |
+| kek\_wrapping\_key\_name | The name of kek wrapping key. |
+| kek\_wrapping\_keyring | The kek wrapping keyring. |
+| kek\_wrapping\_keyring\_name | The name of kek wrapping keyring. |
 | pubsub\_writer\_service\_account\_email | The PubSub writer service account email. Should be used to write data to the PubSub topics the data ingestion pipeline reads from. |
+| random\_suffix | Suffix used in the name of resources. |
 | storage\_writer\_service\_account\_email | The Storage writer service account email. Should be used to write data to the buckets the data ingestion pipeline reads from. |
+| subscription\_names | The name list of Pub/Sub subscriptions |
+| taxonomy\_display\_name | The name of the taxonomy. |
+| taxonomy\_name | The taxonomy name. |
 | template\_project\_id | The id of the flex template created. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
