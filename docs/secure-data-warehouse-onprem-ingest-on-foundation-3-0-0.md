@@ -251,11 +251,14 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
 
     ```hcl
       activate_apis = [
+        "cloudbuild.googleapis.com",
+        "sourcerepo.googleapis.com",
         "cloudkms.googleapis.com",
         "iam.googleapis.com",
+        "artifactregistry.googleapis.com",
         "cloudresourcemanager.googleapis.com",
         "bigquery.googleapis.com",
-        "serviceusage.googleapis.com",
+        "serviceusage.googleapis.com"
       ]
     ```
 
@@ -634,6 +637,7 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
 
 ### 3-networks: Deploy the serverless connector and add new workspace service account to the restricted perimeter
 
+1. Wait for the `gcp-projects` build from the previous step to finish.ls
 1. Get the new workspace service account to the restricted perimeter:
 
     ```bash
@@ -727,7 +731,7 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
 
     module "serverless_connector" {
     source  = "GoogleCloudPlatform/cloud-run/google//modules/secure-serverless-net"
-    version = "~> 0.7"
+    version = "~> 0.9"
     count   = var.enable_sdw ? 1 : 0
 
     connector_name            = "serverless-connector"
@@ -736,11 +740,11 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
     vpc_project_id            = local.restricted_project_id
     serverless_project_id     = local.data_ingestion_project_id
     shared_vpc_name           = module.restricted_shared_vpc.network_name
-    connector_on_host_project = false
     ip_cidr_range             = "10.4.0.0/28"
-    create_subnet             = true
     resource_names_suffix     = "sdw"
-    serverless_type           = "CLOUD_FUNCTION"
+    create_subnet             = true
+    connector_on_host_project = false
+    enable_load_balancer_fw   = false
 
     serverless_service_identity_email = google_project_service_identity.serverless_sa[0].email
     }
@@ -755,13 +759,13 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
     sed -i "s/DATA_INGESTION_PROJECT_ID/${data_ingestion_project_id}/" "gcp-networks/modules/base_env/example_sdw_serverless_connector.tf"
     ```
 
-1. Update the `target_tags` property in the file [restricted_shared_vpc/firewall.tf](https://github.com/terraform-google-modules/terraform-example-foundation/blob/v3.0.0/3-networks-dual-svpc/modules/restricted_shared_vpc/firewall.tf#LL69C1-L69C38) adding the tag `"vpc-connector"` to the firewall rule that allows Google private API access.
+1. Update the `target_tags` property in resource `allow_restricted_api_egress` in the file [gcp-networks/modules/restricted_shared_vpc/firewall.tf](https://github.com/terraform-google-modules/terraform-example-foundation/blob/v3.0.0/3-networks-dual-svpc/modules/restricted_shared_vpc/firewall.tf#LL69C1-L69C38) in the module `restricted_shared_vpc` adding the tag `"vpc-connector"` to the firewall rule that allows Google private API access.
 
   ```hcl
   target_tags = ["allow-google-apis", "vpc-connector"]
   ```
 
-1. Fix the Rule [priority](https://github.com/terraform-google-modules/terraform-example-foundation/blob/v3.0.0/3-networks-dual-svpc/modules/restricted_shared_vpc/firewall.tf#LL50C1-L50C20) to be `65430`
+1. Fix the Rule [priority](https://github.com/terraform-google-modules/terraform-example-foundation/blob/v3.0.0/3-networks-dual-svpc/modules/restricted_shared_vpc/firewall.tf#LL50C1-L50C20) on the same firewall resource to be `65430`
 
   ```hcl
   priority  = 65430
@@ -922,7 +926,7 @@ will deployed in the Secured Data Warehouse Onprem Ingest that will be created i
     }
 
     module "secured_data_warehouse_onprem_ingest" {
-    source  = "terraform-google-modules/secured-data-warehouse-onprem-ingest/google"
+    source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google"
     version = "~> 0.1"
     count   = var.enable_sdw ? 1 : 0
 
