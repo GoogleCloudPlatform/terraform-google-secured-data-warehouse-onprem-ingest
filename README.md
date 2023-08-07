@@ -50,7 +50,7 @@ Basic usage of this module is as follows:
 
 ```hcl
 module "secured_data_warehouse" {
-  source  = "terraform-google-modules/secured-data-warehouse-onprem-ingest/google"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google"
   version = "~> 0.1"
 
   org_id                           = ORG_ID
