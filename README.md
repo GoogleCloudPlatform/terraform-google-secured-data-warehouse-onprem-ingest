@@ -1,38 +1,20 @@
-# Secured Data Warehouse Onprem Ingest Blueprint
+# Secured Data Warehouse On-premisses Data Ingestion Blueprint
 
 [FAQ](./docs/FAQ.md) | [Troubleshooting Guide](./docs/TROUBLESHOOTING.md).
 
-This repository contains Terraform configuration modules that allow Google Cloud customers to
-quickly deploy a secured [BigQuery](https://cloud.google.com/bigquery) data warehouse for onprem data ingest.
+This repository contains Terraform configuration modules that allow Google Cloud customers to import data from an on-premises environment or another cloud into a Secured [BigQuery](https://cloud.google.com/bigquery) warehouse.
+This blueprint provides an opinionated architecture and an example on how to:
 
-The blueprint allows customers to use Google Cloud's core strengths in data analytics,
-and to overcome typical challenges that include:
-
-- Limited knowledge/experience with best practices for creating, deploying, and operating in Google Cloud.
-- Security/risk concerns and restrictions from their internal security, risk, and compliance teams.
-- Regulatory and compliance approval from external auditors.
-
-The Terraform configurations in this repository provide customers with an opinionated architecture
-that incorporates and documents best practices for a performant and scalable design, combined with
-security by default for control, logging and evidence generation. It can be simply deployed by
-customers through a Terraform workflow.
+- Encrypt data located outside of Google Cloud and import it into BigQuery using the [Tink](https://developers.google.com/tink) library.
+- Configure VPC Service Controls to secure the data pipeline and access to confidential data.
+- Configure separation of duties for personas (Google Groups).
+- Set up appropriate security controls (Organization Policies) and Google Cloud Logging to help protect confidential data.
+- Use data classification, Data Catalog policy tags, dynamic data masking, and column-level encryption to restrict access to specific columns in the BigQuery data warehouse.
 
 ## Disclaimer
 
-When using this blueprint, it is important to understand how you manage [separation of duties](https://cloud.google.com/kms/docs/separation-of-duties).
-We recommend you remove all primitive `owner` roles in the projects used as inputs for the *Data Warehouse module*.
-The blueprint itself does not need any primitive owner roles for correct operations.
-
-When using this blueprint in the example mode or when using this blueprint to create the new projects with default configurations for the deployment,
-we automatically remove the owner role as it has too broad access.
-
-However, if you choose to use this blueprint with pre-existing projects in your organization,
-we will not proactively remove any pre-existing owner role assignments,
-as we won’t know your intent for or dependency on these role assignments in your pre-existing workloads.
-The pre-existing presence of these roles does expand the attack and risk surface of the resulting deployment.
-Therefore, we highly recommend you review your use of owner roles in these pre-existing cases and
-see if you can eliminate them to improve your resulting security posture.
-Only you can determine the appropriate trade-off to meet your business requirements.
+When using this blueprint, it is important to understand how you manage [separation of duties](https://cloud.google.com/kms/docs/separation-of-duties. We recommend you remove all primitive `owner` roles in the projects used as inputs for the blueprint main module. The blueprint itself does not need any primitive owner roles for correct operations.
+The Blueprint does not proactively remove any pre-existing owner role assignments from pre-existing projects in your organization, as we won’t know your intent for or dependency on these role assignments in your pre-existing workloads. The pre-existing presence of these roles does expand the attack and risk surface of the resulting deployment. Therefore, we highly recommend you review your use of owner roles in these pre-existing cases and see if you can eliminate them to improve your resulting security posture.
 
 You can check the current situation of your project with either of the following methods:
 
@@ -42,9 +24,7 @@ You can check the current situation of your project with either of the following
 
 See the [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) for additional good practices.
 
-
 ## Usage
-
 
 Basic usage of this module is as follows:
 
@@ -89,6 +69,8 @@ module "secured_data_warehouse" {
 
 A Functional example, deploying the module, the required infrastructure needed by the module,
 and data to be ingested is included in the [examples](./examples/) directory.
+
+Additional information related to the inputs and outputs of the module are detailed in the following section.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -179,7 +161,7 @@ and data to be ingested is included in the [examples](./examples/) directory.
 
 ## Requirements
 
-These sections describe requirements for using this module.
+These sections describe requirements for using this blueprint.
 
 **Note:** Please see the [Disclaimer](#disclaimer) regarding **project owners** before creating projects.
 
@@ -195,8 +177,8 @@ The following dependencies must be available:
 ### Security Groups
 
 Provide the following groups for separation of duty.
-Each group is granted roles to perform their tasks.
-Then, add users to the appropriate groups as needed.
+Each group will be granted roles to perform their tasks.
+Add users to the appropriate groups as needed.
 
 - **Data Engineer group**: Google Cloud IAM group that sets up and maintains the data pipeline and warehouse.
 - **Data Analyst group**: Google Cloud IAM group that analyzes the data in the warehouse.
@@ -206,16 +188,19 @@ Then, add users to the appropriate groups as needed.
 - **Encrypted Data Reader Group**: Google Cloud IAM group that analyzes encrypted data.
 - **Plain Text Reader Group**: Google Cloud IAM group that analyzes plaintext reader.
 
-Groups can be created in the Google [Workspace Admin Console](https://support.google.com/a/answer/9400082?hl=en), in the Google [Cloud Console](https://cloud.google.com/iam/docs/groups-in-cloud-console), and using gcloud identity [groups create](https://cloud.google.com/sdk/gcloud/reference/identity/groups/create).
+Groups can be created in the Google [Workspace Admin Console](https://support.google.com/a/answer/9400082?hl=en), in the Google [Cloud Console](https://cloud.google.com/iam/docs/groups-in-cloud-console), or using gcloud identity [groups create](https://cloud.google.com/sdk/gcloud/reference/identity/groups/create) command.
 
-**Note:** Groups **Data Engineer** and **Data Analyst** are granted role "Service Account User" on the [Dataflow controller](https://cloud.google.com/dataflow/docs/concepts/security-and-permissions#specifying_a_user-managed_controller_service_account) service account, the `dataflow_controller_service_account_email` output.
-This required to be able to run dataflow jobs in the Data Ingestion project.
-See the [Pipeline Deployment](./docs/PIPELINE_DEPLOYMENTS.md) documentation for additional information on deploying Dataflow Jobs.
+**Note 1:** Groups **Data Engineer** and **Data Analyst** are granted the role "Service Account User" on the [Dataflow controller](https://cloud.google.com/dataflow/docs/concepts/security-and-permissions#specifying_a_user-managed_controller_service_account) service account, the one in the `dataflow_controller_service_account_email` output.
+This is required to be able to run dataflow jobs in the Data Ingestion project.
+
+See the [Dataflow Jobs Deployment](./docs/deploying_dataflow_jobs.md) documentation for additional information on deploying Dataflow Jobs.
+
+**Note 2:** The group **Plain Text Reader Group** is the only group tha should be granted access to the KMS keys used to encrypt the data.
 
 ### Service Account
 
-To provision the resources of this module, create a privileged service account, where the service account key cannot be created.
-In addition, consider using Cloud Monitoring to alert on this service account's activity.
+To provision the resources of this module, you must create a privileged service account, where the service account key cannot be created.
+In addition, consider using Google Cloud Monitoring to alert on this service account's activity.
 Grant the following roles to the service account.
 
 - Organization level
@@ -262,16 +247,15 @@ Grant the following roles to the service account.
     - Storage Admin:`roles/storage.admin`
 
 You can use the [Project Factory module](https://github.com/terraform-google-modules/terraform-google-project-factory) and the
-[IAM module](https://github.com/terraform-google-modules/terraform-google-iam) in combination to provision a
-service account with the necessary roles applied.
+[IAM module](https://github.com/terraform-google-modules/terraform-google-iam) in combination to provision.
+These modules can be used to provision a service account with the necessary roles applied.
 
-The user using this service account must have the necessary roles to [impersonate](https://cloud.google.com/iam/docs/impersonating-service-accounts) the service account.
+The user who uses this service account must be granted the [IAM roles necessary to impersonate](https://cloud.google.com/iam/docs/service-account-permissions) the service account.
 
 ### APIs
 
-
-Create four projects with the following APIs enabled to host the
-resources of this module:
+Create three projects with the following APIs enabled to host the
+resources created by this module:
 
 #### Data ingestion project
 
@@ -336,6 +320,7 @@ resources of this module:
 - Compute Engine API:`compute.googleapis.com`
 - Dataflow API:`dataflow.googleapis.com`
 - Identity and Access Management (IAM) API:`iam.googleapis.com`
+- Service Usage API:`serviceusage.googleapis.com`
 
 You can use the [Project Factory module](https://github.com/terraform-google-modules/terraform-google-project-factory) to
 provision the projects with the necessary APIs enabled.

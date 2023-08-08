@@ -469,7 +469,11 @@ resource "google_bigquery_table_iam_member" "dataViewer" {
 * DLP table Scanner
 * See: https://cloud.google.com/bigquery/docs/scan-with-dlp
 *
-* An example of how to configure DLP scanner in a BigQuery table
+* An example of how to configure DLP scanner in a BigQuery table.
+* This example uses the default list of info types to do the scanning.
+* To choose a specific info type see:
+* - https://cloud.google.com/dlp/docs/concepts-infotypes
+* - https://cloud.google.com/dlp/docs/infotypes-reference
 */
 resource "google_data_loss_prevention_inspect_template" "dlp_inspect_template" {
   parent       = "projects/${module.harness_projects.data_governance_project_id}/locations/${local.location}"

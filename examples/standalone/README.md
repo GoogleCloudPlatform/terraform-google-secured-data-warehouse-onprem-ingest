@@ -1,11 +1,11 @@
 # Standalone example
 
 This example:
-- Presents the deploy of the Secured Data Warehouse blueprint variant for ingesting encrypted data from on-prem sources.
+- Presents the deploy of the blueprint for ingesting encrypted data from on-premisses environments.
 - Uses the [Tink](https://developers.google.com/tink) library to encrypt data "on prem" that will be uploaded to BigQuery.
-- Demonstrates the usage of BigQuery [AEAD encryption](https://cloud.google.com/bigquery/docs/reference/standard-sql/aead-encryption-concepts) functions to decrypt the "on prem" data in BigQuery.
+- Demonstrates the usage of BigQuery [AEAD encryption](https://cloud.google.com/bigquery/docs/reference/standard-sql/aead-encryption-concepts) functions to decrypt the on-premisses  data in BigQuery.
 
-This example also create the resources that are required to deploy the Secured Data Warehouse blueprint variant for ingesting encrypted data from on-prem sources that are expected to be provided by the user, what we call the *external harness*.
+This example also create the resources that are required to deploy the blueprint that are expected to be provided by the user, we call these resources *external harness*.
 
 In the External Harness we have:
 
@@ -48,22 +48,19 @@ In the deploy of the Blueprint and the showcase of the usage of `AEAD` and `tink
 - A [Big Query subscription](https://cloud.google.com/pubsub/docs/bigquery) to write Pub/Sub messages to the BigQuery table with column-level security.
 - A DLP scan in the BigQuery table created.
 
-
-**Note:** To deploy this example it is also necessary to have *an existing project* on which the [Service Account](#service-account)
-that will be used to deploy this example needs to be created and have the required IAM Roles granted to it.
-This project should not be on the same folder used to deploy the *Secured Data Warehouse* in accordance with the separation of concerns principle.
-You can use the [Project Factory module](https://github.com/terraform-google-modules/terraform-google-project-factory) and the
-[IAM module](https://github.com/terraform-google-modules/terraform-google-iam) in combination to provision a
-service account with the necessary roles applied.
+**Note:** To deploy this example, you must also have an existing project on which to create a service account that will be used to deploy the example.
+This service account must be granted the required IAM roles.
+The project should not be on the same folder as the projects create in this example, in accordance with the principle of separation of concerns.
+You can use the [Project Factory](https://github.com/terraform-google-modules/terraform-google-project-factory) module and the [IAM module](https://github.com/terraform-google-modules/terraform-google-iam)  in combination.
+These modules can be used to provision a service account with the necessary roles applied.
 
 ## Google Cloud Locations
 
-This example will be deployed at the `us-east4` location; to deploy in another location,
-change the local `location` in the example [main.tf](./main.tf#L18) file.
+This example will be deployed at the `us-east4` location.
+To deploy in another location, change the local `location` in the example [main.tf](./main.tf#L18) file.
 By default, the *Secured Data Warehouse* module has an [Organization Policy](https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations)
 that only allows the creation of resource in `us-locations`.
-To deploy in other locations, update the input [trusted_locations](../../README.md#inputs) with
-the appropriated location in the call to the [main module](./main.tf#L22).
+To deploy in other locations, update the input [trusted_locations](../../README.md#inputs) in the [main module](./main.tf#L39) call.
 
 ## Usage
 
@@ -95,8 +92,6 @@ the appropriated location in the call to the [main module](./main.tf#L22).
 
 If you encounter problems in the `apply` execution check the [Troubleshooting Guide](../../docs/TROUBLESHOOTING.md).
 
-when using Terraform on Google Cloud Shell, check the [IPv6](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#cannot-assign-requested-address-error-in-cloud-shell) entry in the [Troubleshooting Guide](../../docs/TROUBLESHOOTING.md) of the [Terraform Example Foundation](https://github.com/terraform-google-modules/terraform-example-foundation).
-
 ### Clean up
 
 - Run `terraform destroy` to clean up your environment.
@@ -108,22 +103,22 @@ The input `delete_contents_on_destroy` must have been set to `true` in the origi
 
 ### Deploy new Dataflow Jobs
 
-To deploy new Dataflow jobs in the blueprint deployment created by this example, follow the instructions on the  [Pipeline Deployment](../../docs/PIPELINE_DEPLOYMENTS.md) documentation.
+To deploy new Dataflow jobs in the infrastructure created by this example, follow the instructions in the [deploying dataflow jobs](../../docs/deploying_dataflow_jobs.md) documentation.
 
-The subnetwork to be used is the one in the output `data_ingestion_subnets_self_link`.
+Use the subnetwork in the output `data_ingestion_subnets_self_link` to deploy new Dataflow jobs.
 
-Note: If you are using Google Cloud Console, to [disable public IPs](https://cloud.google.com/dataflow/docs/guides/routes-firewall#turn_off_external_ip_address), use the optional parameter "Worker IP Address Configuration" set to `Private`.
+Note: If you are using Google Cloud Console to deploy Dataflow jobs, to [disable public IPs](https://cloud.google.com/dataflow/docs/guides/routes-firewall#turn_off_external_ip_address), use the optional parameter "Worker IP Address Configuration" set to `Private`.
 
 
 ### Perimeter members list
 
 To be able to see the resources protected by the VPC Service Controls [Perimeters](https://cloud.google.com/vpc-service-controls/docs/service-perimeters) in the Google Cloud Console
-you need to add your user in the variable `perimeter_additional_members` in the `terraform.tfvars` file.
+you must add your user in the variable `perimeter_additional_members` in the `terraform.tfvars` file.
 
 ### Sample Data
 
-The sample data used in this example is a [csv file](./assets/cc_10000_records.csv) with fake credit card data.
-For this example, the input file has 10k records.
+The sample data used in this example are a [csv file](./assets/cc_10000_records.csv) and a [json file](./assets/cc_100_records.json) with fake credit card data.
+The csv file has 10k records and the json file has 100 records.
 
 Each record has these values:
 
@@ -148,7 +143,7 @@ The harness will encrypt the following fields in this file:
   - Card_PIN.
   - Credit_Limit.
 
-Advanced Encryption Standard Galois/Counter Mode (AES256_GCM) is used by the Tink library to encrypt the data.
+Advanced Encryption Standard Galois/Counter Mode (AES256_GCM) is used by the [Tink](https://developers.google.com/tink) library to encrypt the data.
 
 ### Taxonomy used
 
@@ -163,7 +158,7 @@ The taxonomy has one level: **Sensitive**
 
 
 No user has access to read this data protected with column-level security.
-If they need access, they need to be added to the appropriate group: encrypted reader or plain text reader.
+If they need access, they need to be added to the appropriate group: *encrypted reader* or *plain text reader*.
 
 ### Sending Data to PubSub Topic
 
@@ -192,7 +187,7 @@ Install the following dependencies:
 
 ### Cloud SDK configurations
 
-The standalone example uses `tinkey` to generate the wrapped_key that will be used to encrypt "on-prem" data. The `tinkey` tool runs using the [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default).
+The standalone example uses `tinkey` to generate the wrapped_key that will be used to encrypt "on-premisses" data. The `tinkey` tool runs using the [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default).
 
 To configure **Application Default Credentials** run:
 
@@ -251,7 +246,7 @@ Grant the following roles to the service account.
   - DNS Administrator: `roles/dns.admin`
 
 **Note:** The billing account used to create the projects may not be under the same organization where the resources are created.
-In this case, granting the role **Billing Account User** to the service account in the organization will have no effect.
+In this case, granting the role **Billing Account User** in the organization will have no effect.
 As an alternative to granting the service account the `Billing Account User` role in organization,
 it is possible to grant it [directly in the billing account](https://cloud.google.com/billing/docs/how-to/billing-access#update-cloud-billing-permissions).
 
