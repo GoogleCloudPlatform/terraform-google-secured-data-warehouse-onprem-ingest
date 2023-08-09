@@ -1,9 +1,9 @@
 # Standalone example
 
 This example:
-- Presents the deploy of the blueprint for ingesting encrypted data from on-premisses environments.
-- Uses the [Tink](https://developers.google.com/tink) library to encrypt data "on prem" that will be uploaded to BigQuery.
-- Demonstrates the usage of BigQuery [AEAD encryption](https://cloud.google.com/bigquery/docs/reference/standard-sql/aead-encryption-concepts) functions to decrypt the on-premisses  data in BigQuery.
+- Presents the deploy of the blueprint for ingesting encrypted data from on-premises environments.
+- Uses the [Tink](https://developers.google.com/tink) library to encrypt data "on prem" that will be Uploaded or streamed to BigQuery.
+- Demonstrates the usage of BigQuery [AEAD encryption](https://cloud.google.com/bigquery/docs/reference/standard-sql/aead-encryption-concepts) functions to decrypt the on-premises data in BigQuery.
 
 This example also create the resources that are required to deploy the blueprint that are expected to be provided by the user, we call these resources *external harness*.
 
@@ -51,7 +51,7 @@ In the deploy of the Blueprint and the showcase of the usage of `AEAD` and `tink
 **Note:** To deploy this example, you must also have an existing project on which to create a service account that will be used to deploy the example.
 This service account must be granted the required IAM roles.
 The project should not be on the same folder as the projects create in this example, in accordance with the principle of separation of concerns.
-You can use the [Project Factory](https://github.com/terraform-google-modules/terraform-google-project-factory) module and the [IAM module](https://github.com/terraform-google-modules/terraform-google-iam)  in combination.
+You can use the [Project Factory](https://github.com/terraform-google-modules/terraform-google-project-factory) module and the [IAM module](https://github.com/terraform-google-modules/terraform-google-iam) in combination.
 These modules can be used to provision a service account with the necessary roles applied.
 
 ## Google Cloud Locations
@@ -187,7 +187,7 @@ Install the following dependencies:
 
 ### Cloud SDK configurations
 
-The standalone example uses `tinkey` to generate the wrapped_key that will be used to encrypt "on-premisses" data. The `tinkey` tool runs using the [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default).
+The standalone example uses `tinkey` to generate the wrapped_key that will be used to encrypt "on-premises" data. The `tinkey` tool runs using the [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default).
 
 To configure **Application Default Credentials** run:
 
