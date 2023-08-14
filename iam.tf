@@ -15,7 +15,7 @@
  */
 
 locals {
-  data_engineer_group_project_data_ingestion_roles = [
+  data_engineer_group_data_ingestion_project_roles = [
     "roles/logging.viewer",
     "roles/dataflow.admin",
     "roles/cloudkms.viewer",
@@ -24,24 +24,28 @@ locals {
     "roles/composer.user"
   ]
 
-  data_engineer_group_project_data_roles = [
+  data_engineer_group_data_project_roles = [
     "roles/logging.viewer",
     "roles/cloudkms.viewer",
+    "roles/cloudbuild.Editor",
+    "roles/compute.NetworkUser",
+    "roles/dataflow.Admin",
     "roles/bigquery.dataEditor",
     "roles/bigquery.jobUser",
     "roles/dlp.admin"
   ]
 
-  data_analyst_group_project_data_ingestion_roles = [
+  data_analyst_group_data_ingestion_project_roles = [
     "roles/logging.viewer",
     "roles/dataflow.viewer",
     "roles/dataflow.developer"
   ]
 
-  data_analyst_group_project_data_roles = [
+  data_analyst_group_data_project_roles = [
     "roles/logging.viewer",
     "roles/dataflow.viewer",
     "roles/dataflow.developer",
+    "roles/dlp.admin",
     "roles/bigquery.dataViewer",
     "roles/bigquery.jobUser",
     "roles/bigquery.user",
@@ -78,28 +82,28 @@ locals {
     "roles/iam.securityAdmin"
   ]
 
-  plaintext_reader_group_role_dataset = [
+  plaintext_reader_group_data_project_bigquery_roles = [
     "roles/bigquery.dataViewer"
   ]
 
-  encrypted_data_reader_group_role = [
+  encrypted_data_reader_group_data_project_bigquery_roles = [
     "roles/bigquery.user"
   ]
 
-  plaintext_reader_group_role_project = [
+  plaintext_reader_group_data_project_roles = [
     "roles/cloudkms.viewer",
     "roles/bigquery.jobUser",
     "roles/bigquery.user"
   ]
 
-  encrypted_data_reader_group_role_project = [
+  encrypted_data_reader_group_data_project_roles = [
     "roles/bigquery.jobUser"
   ]
 
 }
 
 resource "google_project_iam_member" "data-engineer-group-ingestion" {
-  for_each = toset(local.data_engineer_group_project_data_ingestion_roles)
+  for_each = toset(local.data_engineer_group_data_ingestion_project_roles)
 
   project = var.data_ingestion_project_id
   role    = each.value
@@ -107,7 +111,7 @@ resource "google_project_iam_member" "data-engineer-group-ingestion" {
 }
 
 resource "google_project_iam_member" "data-engineer-group" {
-  for_each = toset(local.data_engineer_group_project_data_roles)
+  for_each = toset(local.data_engineer_group_data_project_roles)
 
   project = var.data_project_id
   role    = each.value
@@ -115,7 +119,7 @@ resource "google_project_iam_member" "data-engineer-group" {
 }
 
 resource "google_project_iam_member" "data-analyst-group-ingestion" {
-  for_each = toset(local.data_analyst_group_project_data_ingestion_roles)
+  for_each = toset(local.data_analyst_group_data_ingestion_project_roles)
 
   project = var.data_ingestion_project_id
   role    = each.value
@@ -123,7 +127,7 @@ resource "google_project_iam_member" "data-analyst-group-ingestion" {
 }
 
 resource "google_project_iam_member" "data-analyst-group" {
-  for_each = toset(local.data_analyst_group_project_data_roles)
+  for_each = toset(local.data_analyst_group_data_project_roles)
 
   project = var.data_project_id
   role    = each.value
@@ -155,7 +159,7 @@ resource "google_organization_iam_member" "security-administrator-group" {
 }
 
 resource "google_project_iam_member" "plaintext_reader_group" {
-  for_each = toset(local.plaintext_reader_group_role_project)
+  for_each = toset(local.plaintext_reader_group_data_project_roles)
 
   project = var.data_project_id
   role    = each.value
@@ -163,7 +167,7 @@ resource "google_project_iam_member" "plaintext_reader_group" {
 }
 
 resource "google_project_iam_member" "encrypted_data_reader_group" {
-  for_each = toset(local.encrypted_data_reader_group_role_project)
+  for_each = toset(local.encrypted_data_reader_group_data_project_roles)
 
   project = var.data_project_id
   role    = each.value
@@ -171,7 +175,7 @@ resource "google_project_iam_member" "encrypted_data_reader_group" {
 }
 
 resource "google_bigquery_dataset_iam_member" "encrypted_data_reader_group" {
-  for_each = toset(local.encrypted_data_reader_group_role)
+  for_each = toset(local.encrypted_data_reader_group_data_project_bigquery_roles)
 
   project    = var.data_project_id
   dataset_id = var.dataset_id
@@ -184,7 +188,7 @@ resource "google_bigquery_dataset_iam_member" "encrypted_data_reader_group" {
 }
 
 resource "google_bigquery_dataset_iam_member" "plaintext_data_reader_group" {
-  for_each = toset(local.plaintext_reader_group_role_dataset)
+  for_each = toset(local.plaintext_reader_group_data_project_bigquery_roles)
 
   project    = var.data_project_id
   dataset_id = var.dataset_id
