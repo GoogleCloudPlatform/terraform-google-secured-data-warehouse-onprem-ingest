@@ -27,9 +27,9 @@ locals {
   data_engineer_group_data_project_roles = [
     "roles/logging.viewer",
     "roles/cloudkms.viewer",
-    "roles/cloudbuild.Editor",
-    "roles/compute.NetworkUser",
-    "roles/dataflow.Admin",
+    "roles/cloudbuild.builds.editor",
+    "roles/compute.networkUser",
+    "roles/dataflow.admin",
     "roles/bigquery.dataEditor",
     "roles/bigquery.jobUser",
     "roles/dlp.admin"
