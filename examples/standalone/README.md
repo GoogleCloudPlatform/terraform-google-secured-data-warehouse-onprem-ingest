@@ -70,6 +70,13 @@ To deploy in other locations, update the input [trusted_locations](../../README.
   mv terraform.example.tfvars terraform.tfvars
   ```
 
+- Before running the standalone example, make sure you have `Java` and `Tinkey` installed locally.
+  To do so, use the [Tinkey Setup Helper](../../helpers/tinkey_setup.sh) by running the command below inside the standalone folder:
+
+  ```bash
+  ../../helpers/tinkey_setup.sh
+  ```
+
 - Run `terraform init` to get the plugins.
 
   ```bash
