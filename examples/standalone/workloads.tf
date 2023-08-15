@@ -238,6 +238,12 @@ resource "google_bigquery_table" "credit_card" {
 * to the Data project using the infrastructure from the Data Ingestion project.
 * The file is encrypted using a key created with Tinkey and helpers
 * to encrypt the files.
+*
+* Note: the Data Encryption Key (DEK) is created here so that the example
+* can be deployed with minimal requirements. In a production flow the DEK
+* Should be created outside of the Terraform configuration used for the
+* creation of the BigQuery Data Warehouse with the appropriated controls
+* to preserve it and keep it save.
 */
 module "kek_wrapping_key" {
   source  = "terraform-google-modules/kms/google"
