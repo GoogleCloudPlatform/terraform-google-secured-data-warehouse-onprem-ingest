@@ -20,7 +20,8 @@ locals {
 }
 
 module "secured_data_warehouse_onprem_ingest" {
-  source = "../.."
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google"
+  version = "~> 0.1"
 
   org_id                           = var.org_id
   labels                           = { environment = "dev" }
