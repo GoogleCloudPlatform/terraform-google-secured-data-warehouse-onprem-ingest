@@ -25,7 +25,8 @@ locals {
 }
 
 module "harness_projects" {
-  source = "../..//modules/harness-projects"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/harness-projects"
+  version = "~> 0.1"
 
   org_id                       = var.org_id
   labels                       = { environment = "dev" }
@@ -39,7 +40,8 @@ module "harness_projects" {
 }
 
 module "harness_artifact_registry_project" {
-  source = "../..//modules/harness-artifact-registry"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/harness-artifact-registry"
+  version = "~> 0.1"
 
   org_id                = var.org_id
   folder_id             = var.folder_id
@@ -50,7 +52,8 @@ module "harness_artifact_registry_project" {
 }
 
 module "upload_python_modules" {
-  source = "../..//modules/harness-upload-python-modules"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/harness-upload-python-modules"
+  version = "~> 0.1"
 
   project_id             = module.harness_artifact_registry_project.project_id
   location               = local.location
@@ -64,7 +67,8 @@ module "upload_python_modules" {
 }
 
 module "build_flex_template" {
-  source = "../..//modules/harness-build-flex-template"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/harness-build-flex-template"
+  version = "~> 0.1"
 
   project_id                = module.harness_artifact_registry_project.project_id
   docker_repository_url     = module.harness_artifact_registry_project.docker_flex_template_repository_url
@@ -79,7 +83,8 @@ module "build_flex_template" {
 }
 
 module "centralized_logging" {
-  source = "../..//modules/harness-logging"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/harness-logging"
+  version = "~> 0.1"
 
   projects_ids                = local.projects_ids
   labels                      = { environment = "dev" }

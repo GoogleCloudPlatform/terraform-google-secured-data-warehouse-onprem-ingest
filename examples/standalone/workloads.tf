@@ -488,7 +488,8 @@ resource "google_data_loss_prevention_inspect_template" "dlp_inspect_template" {
 }
 
 module "dlp_scanner" {
-  source = "../../modules/dlp-scanner"
+  source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google//modules/dlp-scanner"
+  version = "~> 0.1"
 
   bq_project_id             = module.harness_projects.data_project_id
   bq_dataset_id             = local.dataset_id
