@@ -89,16 +89,16 @@ If you do not have this layout, please checkout the source repositories for the 
 
 The final layout should look like this:
 
-    ```text
-    gcp-bootstrap
-    gcp-environments
-    gcp-networks
-    gcp-org
-    gcp-policies
-    gcp-policies-app-infra
-    gcp-projects
-    terraform-google-secured-data-warehouse-onprem-ingest
-    ```
+  ```text
+  gcp-bootstrap
+  gcp-environments
+  gcp-networks
+  gcp-org
+  gcp-policies
+  gcp-policies-app-infra
+  gcp-projects
+  terraform-google-secured-data-warehouse-onprem-ingest
+  ```
 
 
 ### Update gcloud terraform vet policies
