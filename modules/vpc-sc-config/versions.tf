@@ -36,7 +36,7 @@ terraform {
 
     time = {
       source  = "hashicorp/time"
-      version = "0.9.1"
+      version = "0.12.1"
     }
 
     random = {
