@@ -69,7 +69,7 @@ resource "random_id" "suffix" {
 
 module "cmek" {
   source  = "terraform-google-modules/kms/google"
-  version = "2.2.1"
+  version = "2.3.0"
 
   project_id           = var.data_governance_project_id
   labels               = var.labels

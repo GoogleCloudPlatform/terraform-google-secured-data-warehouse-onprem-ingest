@@ -35,7 +35,7 @@ data "google_storage_project_service_account" "gcs_account" {
 
 module "cmek" {
   source  = "terraform-google-modules/kms/google"
-  version = "2.2.1"
+  version = "2.3.0"
   count   = var.create_bucket ? 1 : 0
 
   project_id           = var.kms_project_id
@@ -54,7 +54,7 @@ module "cmek" {
 
 module "logging_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "3.4.0"
+  version = "3.4.1"
 
   count = var.create_bucket ? 1 : 0
 
@@ -69,7 +69,7 @@ module "logging_bucket" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "7.4.2"
+  version = "7.8.2"
 
   for_each = var.projects_ids
 

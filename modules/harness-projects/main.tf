@@ -26,7 +26,7 @@ resource "random_id" "project_id_suffix" {
 
 module "data_ingestion_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "14.5"
 
   name                    = local.data_ingestion_project_name
   random_project_id       = "true"
@@ -65,7 +65,7 @@ module "data_ingestion_project" {
 
 module "data_governance_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "14.5"
 
   name                    = local.data_governance_project_name
   random_project_id       = "true"
@@ -95,7 +95,7 @@ module "data_governance_project" {
 
 module "data_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "14.5"
 
   name                    = local.data_project_name
   random_project_id       = "true"

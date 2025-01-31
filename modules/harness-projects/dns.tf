@@ -35,7 +35,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "restricted_googleapis" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "4.1.0"
+  version     = "4.2.1"
   project_id  = module.data_ingestion_project.project_id
   type        = "private"
   name        = "dz-e-shared-restricted-apis"
@@ -76,7 +76,7 @@ module "restricted_googleapis" {
 
 module "restricted_gcr" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "4.1.0"
+  version     = "4.2.1"
   project_id  = module.data_ingestion_project.project_id
   type        = "private"
   name        = "dz-e-shared-restricted-gcr"
@@ -109,7 +109,7 @@ module "restricted_gcr" {
 
 module "restricted_pkg_dev" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "4.1.0"
+  version     = "4.2.1"
   project_id  = module.data_ingestion_project.project_id
   type        = "private"
   name        = "dz-e-shared-restricted-pkg-dev"
