@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ module "upload_python_modules" {
   project_id             = module.harness_artifact_registry_project.project_id
   location               = local.location
   cloudbuild_bucket_name = module.harness_artifact_registry_project.cloudbuild_bucket_name
-  service_account_email  = var.terraform_service_account
+  service_account_email  = module.harness_artifact_registry_project.cloudbuild_builder_email
   python_repository_id   = module.harness_artifact_registry_project.python_flex_template_repository_id
 
   depends_on = [
@@ -72,7 +72,7 @@ module "build_flex_template" {
 
   project_id                = module.harness_artifact_registry_project.project_id
   docker_repository_url     = module.harness_artifact_registry_project.docker_flex_template_repository_url
-  service_account_email     = var.terraform_service_account
+  service_account_email     = module.harness_artifact_registry_project.cloudbuild_builder_email
   cloudbuild_bucket_name    = module.harness_artifact_registry_project.cloudbuild_bucket_name
   flex_template_bucket_name = module.harness_artifact_registry_project.flex_template_bucket_name
   pip_index_url             = module.harness_artifact_registry_project.pip_index_url

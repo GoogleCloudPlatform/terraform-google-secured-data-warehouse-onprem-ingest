@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,24 @@
 
 locals {
   int_proj_required_roles = [
-    "roles/storage.admin",
-    "roles/storage.objectCreator",
-    "roles/browser",
     "roles/artifactregistry.admin",
+    "roles/browser",
+    "roles/cloudbuild.builds.editor",
     "roles/iam.serviceAccountCreator",
     "roles/iam.serviceAccountDeleter",
+    "roles/logging.logWriter",
+    "roles/serviceusage.serviceUsageAdmin",
+    "roles/storage.admin",
+    "roles/storage.objectCreator",
+  ]
+
+  cloud_builder_required_roles = [
+    "roles/artifactregistry.admin",
+    "roles/browser",
     "roles/cloudbuild.builds.editor",
-    "roles/serviceusage.serviceUsageAdmin"
+    "roles/logging.logWriter",
+    "roles/storage.admin",
+    "roles/storage.objectCreator",
   ]
 
   apis_to_enable = [
@@ -95,6 +105,20 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
   depends_on = [
     module.external_flex_template_project
   ]
+}
+
+resource "google_service_account" "cloud_builder" {
+  account_id   = "cloud-builder"
+  display_name = "Cloud Builder"
+  project      = module.external_flex_template_project.project_id
+}
+
+resource "google_project_iam_member" "cloud_builder_roles" {
+  for_each = toset(local.cloud_builder_required_roles)
+
+  project = module.external_flex_template_project.project_id
+  role    = each.value
+  member  = google_service_account.cloud_builder.member
 }
 
 resource "google_project_iam_member" "int_permission_artifact_registry_test" {
