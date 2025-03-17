@@ -66,7 +66,7 @@ resource "random_id" "project_id_suffix" {
 
 module "external_flex_template_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "18.0"
 
   name                    = local.project_name
   random_project_id       = "true"
@@ -74,6 +74,7 @@ module "external_flex_template_project" {
   folder_id               = var.folder_id
   billing_account         = var.billing_account
   default_service_account = "deprivilege"
+  deletion_policy         = var.deletion_policy
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

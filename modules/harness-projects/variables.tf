@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,4 +61,10 @@ variable "data_project_name" {
   description = "Custom project name for the data project."
   type        = string
   default     = ""
+}
+
+variable "deletion_policy" {
+  description = "Project deletion policy"
+  type        = string
+  default     = "PREVENT"
 }
