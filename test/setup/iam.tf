@@ -79,6 +79,7 @@ resource "google_billing_account_iam_member" "int_test" {
 }
 
 resource "google_service_account_iam_member" "cloud_build_impersonation" {
+  count              = var.build_project_number == null ? 0 : 1
   service_account_id = google_service_account.int_test.name
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${var.build_project_number}@cloudbuild.gserviceaccount.com"

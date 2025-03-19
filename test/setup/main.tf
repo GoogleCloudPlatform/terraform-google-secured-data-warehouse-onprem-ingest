@@ -52,6 +52,7 @@ resource "random_id" "folder-rand" {
 }
 
 resource "google_folder" "int_test" {
-  display_name = "ci-dwt-${random_id.folder-rand.hex}"
-  parent       = "folders/${var.folder_id}"
+  display_name        = "ci-dwt-${random_id.folder-rand.hex}"
+  parent              = "folders/${var.folder_id}"
+  deletion_protection = false
 }
