@@ -177,8 +177,6 @@ Using terraform:
 
 ```hcl
 resource "google_artifact_registry_repository_iam_member" "python_reader" {
-  provider = google-beta
-
   project    = "ARTIFACT-REGISTRY-PROJECT-ID"
   location   = "ARTIFACT-REGISTRY-REPOSITORY-LOCATION"
   repository = "python-modules"

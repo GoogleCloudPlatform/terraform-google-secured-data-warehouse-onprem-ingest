@@ -160,8 +160,6 @@ resource "google_project_iam_member" "cloud_build_builder" {
 }
 
 resource "google_artifact_registry_repository" "flex_templates" {
-  provider = google-beta
-
   project       = local.project_id
   location      = var.location
   repository_id = local.docker_repository_id
@@ -174,8 +172,6 @@ resource "google_artifact_registry_repository" "flex_templates" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "docker_writer" {
-  provider = google-beta
-
   project    = local.project_id
   location   = var.location
   repository = local.docker_repository_id
@@ -188,8 +184,6 @@ resource "google_artifact_registry_repository_iam_member" "docker_writer" {
 }
 
 resource "google_artifact_registry_repository" "python_modules" {
-  provider = google-beta
-
   project       = local.project_id
   location      = var.location
   repository_id = local.python_repository_id
@@ -202,8 +196,6 @@ resource "google_artifact_registry_repository" "python_modules" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "python_writer" {
-  provider = google-beta
-
   project    = local.project_id
   location   = var.location
   repository = local.python_repository_id
