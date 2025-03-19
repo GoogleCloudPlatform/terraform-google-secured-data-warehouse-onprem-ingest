@@ -981,14 +981,16 @@ resource "google_dataflow_flex_template_job" "dataflow_flex_template_job" {
   staging_location        = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/staging/"
   temp_location           = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/tmp/"
   kms_key_name            = module.secured_data_warehouse_onprem_ingest.cmek_data_ingestion_crypto_key
+  subnetwork              = module.harness_projects.data_ingestion_subnets_self_link
+  ip_configuration        = "WORKER_IP_PRIVATE" 
+  additional_experiments = [
+    "enable_kms_on_streaming_engine",
+  ]
 
   parameters = {
     input_topic             = "projects/${module.harness_projects.data_ingestion_project_id}/topics/${module.secured_data_warehouse_onprem_ingest.data_ingestion_topic_name}"
     bq_schema               = local.bq_schema
     output_table            = "${module.harness_projects.data_project_id}:${local.dataset_id}.${local.table_id}"
-    subnetwork              = module.harness_projects.data_ingestion_subnets_self_link
-    no_use_public_ips       = true
-    experiments             = "enable_kms_on_streaming_engine"
   }
 
   depends_on = [
