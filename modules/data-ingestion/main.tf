@@ -70,6 +70,12 @@ module "cloudfunction_bucket" {
   }
 }
 
+resource "google_storage_bucket_iam_member" "cloudfunction_bucket" {
+  bucket = module.cloudfunction_bucket.bucket.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${var.cloudfunction_controller_service_account_email}"
+}
+
 //pub/sub data ingestion topic
 module "data_ingestion_topic" {
   source  = "terraform-google-modules/pubsub/google"

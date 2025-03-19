@@ -19,6 +19,7 @@ locals {
     "serviceAccount:${module.data_ingestion_sa.dataflow_controller_service_account_email}",
     "serviceAccount:${module.data_ingestion_sa.storage_writer_service_account_email}",
     "serviceAccount:${module.data_ingestion_sa.pubsub_writer_service_account_email}",
+    "serviceAccount:${module.data_ingestion_sa.cloudfunction_controller_service_account_email}",
     "serviceAccount:${google_project_service_identity.eventarc_identity_sa.email}",
     "serviceAccount:${google_project_service_identity.cloudbuild_identity_sa.email}",
     "serviceAccount:${google_project_service_identity.dlp_identity_sa.email}",

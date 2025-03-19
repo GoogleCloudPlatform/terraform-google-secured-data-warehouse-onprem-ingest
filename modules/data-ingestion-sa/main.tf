@@ -40,9 +40,11 @@ locals {
   ]
 
   cloudfunction_data_project_roles = [
-    "roles/eventarc.eventReceiver",
+    "roles/artifactregistry.writer",
     "roles/bigquery.dataEditor",
-    "roles/bigquery.jobUser"
+    "roles/bigquery.jobUser",
+    "roles/eventarc.eventReceiver",
+    "roles/logging.logWriter",
   ]
 }
 
