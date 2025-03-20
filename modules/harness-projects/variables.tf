@@ -64,7 +64,7 @@ variable "data_project_name" {
 }
 
 variable "deletion_policy" {
-  description = "Project deletion policy"
+  description = "Project deletion policy. Possible values are: \"PREVENT\", \"ABANDON\", \"DELETE\""
   type        = string
   default     = "PREVENT"
 }

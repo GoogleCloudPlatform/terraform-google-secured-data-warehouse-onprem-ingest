@@ -99,7 +99,7 @@ resource "google_service_account" "pubsub_writer_service_account" {
 // Cloud Function service account
 module "cloudfunction_controller_service_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.5.0"
+  version = "4.5"
 
   project_id   = var.data_ingestion_project_id
   names        = ["sa-cloudfunction-controller"]

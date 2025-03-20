@@ -494,7 +494,7 @@ module "dlp_scanner" {
 */
 module "pubsub_to_bigquery" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "8.0"
+  version = "~> 8.0"
 
   project_id         = module.harness_projects.data_ingestion_project_id
   topic              = "pubsub_to_bigquery_topic"
