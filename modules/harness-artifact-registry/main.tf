@@ -66,7 +66,7 @@ resource "random_id" "project_id_suffix" {
 
 module "external_flex_template_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "18.0"
 
   name                    = local.project_name
   random_project_id       = "true"
@@ -74,6 +74,7 @@ module "external_flex_template_project" {
   folder_id               = var.folder_id
   billing_account         = var.billing_account
   default_service_account = "deprivilege"
+  deletion_policy         = var.deletion_policy
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",
@@ -159,8 +160,6 @@ resource "google_project_iam_member" "cloud_build_builder" {
 }
 
 resource "google_artifact_registry_repository" "flex_templates" {
-  provider = google-beta
-
   project       = local.project_id
   location      = var.location
   repository_id = local.docker_repository_id
@@ -173,8 +172,6 @@ resource "google_artifact_registry_repository" "flex_templates" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "docker_writer" {
-  provider = google-beta
-
   project    = local.project_id
   location   = var.location
   repository = local.docker_repository_id
@@ -187,8 +184,6 @@ resource "google_artifact_registry_repository_iam_member" "docker_writer" {
 }
 
 resource "google_artifact_registry_repository" "python_modules" {
-  provider = google-beta
-
   project       = local.project_id
   location      = var.location
   repository_id = local.python_repository_id
@@ -201,8 +196,6 @@ resource "google_artifact_registry_repository" "python_modules" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "python_writer" {
-  provider = google-beta
-
   project    = local.project_id
   location   = var.location
   repository = local.python_repository_id

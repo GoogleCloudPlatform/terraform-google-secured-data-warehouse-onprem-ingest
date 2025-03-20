@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ resource "random_id" "suffix" {
 //storage data ingestion bucket
 module "data_ingestion_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "3.4.0"
+  version = "10.0.0"
 
   project_id      = var.data_ingestion_project_id
   labels          = var.labels
@@ -38,7 +38,7 @@ module "data_ingestion_bucket" {
 
 module "dataflow_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "3.4.0"
+  version = "10.0.0"
 
   project_id    = var.data_ingestion_project_id
   labels        = var.labels
@@ -55,7 +55,7 @@ module "dataflow_bucket" {
 
 module "cloudfunction_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~>3.4"
+  version = "~> 10.0"
 
   project_id    = var.data_ingestion_project_id
   labels        = var.labels
@@ -70,10 +70,16 @@ module "cloudfunction_bucket" {
   }
 }
 
+resource "google_storage_bucket_iam_member" "cloudfunction_bucket" {
+  bucket = module.cloudfunction_bucket.bucket.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${var.cloudfunction_controller_service_account_email}"
+}
+
 //pub/sub data ingestion topic
 module "data_ingestion_topic" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "5.0"
+  version = "8.0"
 
   project_id             = var.data_ingestion_project_id
   topic_labels           = var.labels

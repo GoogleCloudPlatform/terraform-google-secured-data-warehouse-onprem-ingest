@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ locals {
 
 module "location_restriction_policy" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "5.2.2"
+  version = "7.0.0"
 
   policy_for        = "project"
   project_id        = var.project_id
@@ -32,7 +32,7 @@ module "location_restriction_policy" {
 
 module "org_domain_restricted_sharing" {
   source  = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
-  version = "5.2.2"
+  version = "7.0.0"
   count   = length(var.domains_to_allow) == 0 ? 0 : 1
 
   policy_for       = "project"
@@ -43,7 +43,7 @@ module "org_domain_restricted_sharing" {
 
 module "restricted_non_cmek_services" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "5.2.2"
+  version = "7.0.0"
   count   = length(var.restricted_non_cmek_services) > 0 ? 1 : 0
 
   policy_for       = "project"

@@ -37,6 +37,7 @@ module "harness_projects" {
   data_governance_project_name = var.data_governance_project_name
   data_project_name            = var.data_project_name
   service_account_email        = var.terraform_service_account
+  deletion_policy              = local.deletion_policy
 }
 
 module "harness_artifact_registry_project" {
@@ -49,6 +50,7 @@ module "harness_artifact_registry_project" {
   billing_account       = var.billing_account
   location              = local.location
   service_account_email = var.terraform_service_account
+  deletion_policy       = local.deletion_policy
 }
 
 module "upload_python_modules" {

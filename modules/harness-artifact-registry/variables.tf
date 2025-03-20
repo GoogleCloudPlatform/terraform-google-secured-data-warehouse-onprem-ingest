@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,4 +43,10 @@ variable "location" {
 variable "service_account_email" {
   description = "Terraform service account email"
   type        = string
+}
+
+variable "deletion_policy" {
+  description = "Project deletion policy. Possible values are: \"PREVENT\", \"ABANDON\", \"DELETE\""
+  type        = string
+  default     = "PREVENT"
 }

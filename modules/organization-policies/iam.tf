@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ locals {
 
 module "boolean_iam_org_policies" {
   source   = "terraform-google-modules/org-policy/google"
-  version  = "5.2.2"
+  version  = "7.0.0"
   for_each = local.boolean_iam_org_policies
 
   policy_for  = "project"
