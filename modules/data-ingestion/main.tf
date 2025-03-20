@@ -55,7 +55,7 @@ module "dataflow_bucket" {
 
 module "cloudfunction_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "10.0.0"
+  version = "~> 10.0"
 
   project_id    = var.data_ingestion_project_id
   labels        = var.labels
@@ -79,7 +79,7 @@ resource "google_storage_bucket_iam_member" "cloudfunction_bucket" {
 //pub/sub data ingestion topic
 module "data_ingestion_topic" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "8.0.1"
+  version = "8.0"
 
   project_id             = var.data_ingestion_project_id
   topic_labels           = var.labels

@@ -604,7 +604,7 @@ resource "google_project_iam_member" "run_identity_services" {
 
 module "serverless_connector" {
   source  = "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta"
-  version = "10.0.0"
+  version = "~> 10.0.0"
 
   project_id = module.harness_projects.data_ingestion_project_id
   vpc_connectors = [{
