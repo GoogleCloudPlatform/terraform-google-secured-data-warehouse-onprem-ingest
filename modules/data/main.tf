@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 // Creates a BigQuery dataset with Customer-Managed Encryption Keys (CMEK)
 module "bigquery_data" {
   source  = "terraform-google-modules/bigquery/google"
-  version = "5.4.3"
+  version = "10.0.1"
 
   project_id                  = var.project_id
   dataset_id                  = var.dataset_id

@@ -28,4 +28,6 @@ variable "billing_account" {
 variable "build_project_number" {
   description = "The project number of the build project"
   type        = string
+  nullable    = true
+  default     = null
 }

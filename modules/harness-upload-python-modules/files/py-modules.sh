@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2023 Google LLC
+# Copyright 2023-2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ fi
 
 # Install dependencies
 apt install unzip
-pip3 install --no-cache-dir twine keyrings.google-artifactregistry-auth
+pip3 install --no-cache-dir twine keyrings.google-artifactregistry-auth --break-system-packages
 
 # Create temp dir for the Python modules
 mkdir -p artifact_registry_rep

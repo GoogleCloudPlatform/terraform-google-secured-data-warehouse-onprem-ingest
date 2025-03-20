@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 
 locals {
-  location   = "us-east4"
-  dataset_id = "data_dataset"
+  location        = "us-east4"
+  dataset_id      = "data_dataset"
+  deletion_policy = var.delete_contents_on_destroy ? "DELETE" : "PREVENT"
 }
 
 module "secured_data_warehouse_onprem_ingest" {

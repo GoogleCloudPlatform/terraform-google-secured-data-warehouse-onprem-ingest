@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ resource "null_resource" "python_pubsub_dataflow_bq_flex_template" {
 
   provisioner "local-exec" {
     when    = create
-    command = <<EOF
+    command = <<-EOF
       gcloud builds submit \
-       --project=${var.project_id} \
-       --gcs-source-staging-dir="gs://${var.cloudbuild_bucket_name}/source" \
-       --config ${path.module}/pubsub_dataflow_bigquery/cloudbuild.yaml \
-       --impersonate-service-account=${var.service_account_email} \
-       --substitutions="_PROJECT=${var.project_id},_FLEX_TEMPLATE_IMAGE_TAG=${local.flex_template_image_tag},_PIP_INDEX_URL=${var.pip_index_url},_TEMPLATE_GS_PATH=${local.template_gs_path}" \
-       ${path.module}/pubsub_dataflow_bigquery
+        --project=${var.project_id} \
+        --gcs-source-staging-dir="gs://${var.cloudbuild_bucket_name}/source" \
+        --config ${path.module}/pubsub_dataflow_bigquery/cloudbuild.yaml \
+        --service-account=projects/${var.project_id}/serviceAccounts/${var.service_account_email} \
+        --substitutions="_PROJECT=${var.project_id},_FLEX_TEMPLATE_IMAGE_TAG=${local.flex_template_image_tag},_PIP_INDEX_URL=${var.pip_index_url},_TEMPLATE_GS_PATH=${local.template_gs_path}" \
+        ${path.module}/pubsub_dataflow_bigquery
 EOF
 
   }

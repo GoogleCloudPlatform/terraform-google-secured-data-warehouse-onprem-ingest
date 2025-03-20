@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ locals {
 
 module "network" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "5.2.0"
+  version                                = "10.0.0"
   project_id                             = module.data_ingestion_project.project_id
   network_name                           = local.network_name
   shared_vpc_host                        = "false"

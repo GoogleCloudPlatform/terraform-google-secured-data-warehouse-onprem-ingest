@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ resource "random_string" "suffix" {
 // encrypted table example
 module "kek_wrapping_key" {
   source  = "terraform-google-modules/kms/google"
-  version = "2.2.1"
+  version = "4.0.0"
 
   project_id           = local.data_governance_project_id
   labels               = { environment = "dev" }

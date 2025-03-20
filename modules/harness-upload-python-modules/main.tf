@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ resource "null_resource" "upload_modules" {
 
   provisioner "local-exec" {
     when    = create
-    command = <<EOF
-     gcloud builds submit \
-     --project=${var.project_id} \
-     --gcs-source-staging-dir="gs://${var.cloudbuild_bucket_name}/source" \
-     --config ${path.module}/files/cloudbuild.yaml \
-     --impersonate-service-account=${var.service_account_email} \
-     --substitutions=_REPOSITORY_ID=${var.python_repository_id},_DEFAULT_REGION=${var.location} \
-     ${path.module}/files
+    command = <<-EOF
+      gcloud builds submit \
+        --project=${var.project_id} \
+        --gcs-source-staging-dir="gs://${var.cloudbuild_bucket_name}/source" \
+        --config ${path.module}/files/cloudbuild.yaml \
+        --service-account=projects/${var.project_id}/serviceAccounts/${var.service_account_email} \
+        --substitutions=_REPOSITORY_ID=${var.python_repository_id},_DEFAULT_REGION=${var.location} \
+        ${path.module}/files
 EOF
 
   }

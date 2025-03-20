@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ resource "random_id" "suffix" {
 
 module "access_level_policy" {
   source      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version     = "5.0"
+  version     = "6.2"
   policy      = var.access_context_manager_policy_id
   name        = local.access_policy_name
   description = "policy with all available options to configure"

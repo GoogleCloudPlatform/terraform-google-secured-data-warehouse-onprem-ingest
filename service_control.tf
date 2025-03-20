@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ locals {
     "serviceAccount:${module.data_ingestion_sa.dataflow_controller_service_account_email}",
     "serviceAccount:${module.data_ingestion_sa.storage_writer_service_account_email}",
     "serviceAccount:${module.data_ingestion_sa.pubsub_writer_service_account_email}",
+    "serviceAccount:${module.data_ingestion_sa.cloudfunction_controller_service_account_email}",
     "serviceAccount:${google_project_service_identity.eventarc_identity_sa.email}",
     "serviceAccount:${google_project_service_identity.cloudbuild_identity_sa.email}",
     "serviceAccount:${google_project_service_identity.dlp_identity_sa.email}",
@@ -436,7 +437,7 @@ resource "google_access_context_manager_service_perimeter_resource" "perimeter-r
 
 module "vpc_sc_bridge_data_ingestion_governance" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/bridge_service_perimeter"
-  version = "4.0.1"
+  version = "6.2.1"
 
   policy         = local.actual_policy
   perimeter_name = "vpc_sc_bridge_ingestion_to_governance_${random_id.suffix.hex}"
@@ -462,7 +463,7 @@ module "vpc_sc_bridge_data_ingestion_governance" {
 
 module "vpc_sc_bridge_data_governance" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/bridge_service_perimeter"
-  version = "4.0.1"
+  version = "6.2.1"
 
   policy         = local.actual_policy
   perimeter_name = "vpc_sc_bridge_data_to_governance_${random_id.suffix.hex}"
@@ -488,7 +489,7 @@ module "vpc_sc_bridge_data_governance" {
 
 module "vpc_sc_bridge_data_ingestion" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/bridge_service_perimeter"
-  version = "4.0.1"
+  version = "6.2.1"
 
   policy         = local.actual_policy
   perimeter_name = "vpc_sc_bridge_data_to_ingestion_${random_id.suffix.hex}"

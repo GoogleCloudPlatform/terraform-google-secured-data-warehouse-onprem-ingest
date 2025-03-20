@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ resource "random_id" "suffix" {
 
 module "cmek" {
   source  = "terraform-google-modules/kms/google"
-  version = "2.2.1"
+  version = "4.0.0"
 
   project_id           = var.data_governance_project_id
   labels               = var.labels
@@ -87,7 +87,7 @@ module "cmek" {
 
 module "bigquery_dlp_output_data" {
   source  = "terraform-google-modules/bigquery/google"
-  version = "5.4.3"
+  version = "10.0.1"
 
   project_id                  = var.data_governance_project_id
   dataset_id                  = var.dlp_output_dataset

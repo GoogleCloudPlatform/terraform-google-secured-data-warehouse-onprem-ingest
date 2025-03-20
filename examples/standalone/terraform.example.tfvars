@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,3 +30,4 @@ data_analyst_group           = "data_analyst_group@example.com"
 data_engineer_group          = "data_engineer_group@example.com"
 plaintext_reader_group       = "plaintext_reader_group@example.com"
 encrypted_data_reader_group  = "encrypted_data_reader_group@example.com"
+delete_contents_on_destroy   = false
