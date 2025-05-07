@@ -50,10 +50,6 @@ module "cmek" {
   encrypters           = ["serviceAccount:${local.storage_sa}"]
   decrypters           = ["serviceAccount:${local.storage_sa}"]
   prevent_destroy      = !var.delete_contents_on_destroy
-
-  depends_on = [
-    google_project_service_identity.kms_service_agent,
-  ]
 }
 
 module "logging_bucket" {
