@@ -33,13 +33,6 @@ data "google_storage_project_service_account" "gcs_account" {
   project = var.logging_project_id
 }
 
-resource "google_project_service_identity" "kms_service_agent" {
-  provider = google-beta
-
-  project = var.kms_project_id
-  service = "cloudkms.googleapis.com"
-}
-
 module "cmek" {
   source  = "terraform-google-modules/kms/google"
   version = "4.0.0"
