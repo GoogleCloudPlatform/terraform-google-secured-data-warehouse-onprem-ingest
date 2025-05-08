@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,8 +70,6 @@ resource "random_string" "suffix" {
 * by a Data Catalog Taxonomy
 */
 resource "google_data_catalog_taxonomy" "secure_taxonomy" {
-  provider = google-beta
-
   project                = module.harness_projects.data_governance_project_id
   region                 = local.location
   display_name           = local.taxonomy_display_name
@@ -83,15 +81,12 @@ resource "google_data_catalog_taxonomy" "secure_taxonomy" {
   ]
 }
 resource "google_data_catalog_policy_tag" "policy_tag_sensitive" {
-  provider = google-beta
-
   taxonomy     = google_data_catalog_taxonomy.secure_taxonomy.id
   display_name = "1_Sensitive"
   description  = "Data not meant to be public."
 }
 
 resource "google_data_catalog_policy_tag" "sensitive_tags" {
-  provider = google-beta
   for_each = local.sensitive_tags
 
   taxonomy          = google_data_catalog_taxonomy.secure_taxonomy.id
@@ -101,8 +96,6 @@ resource "google_data_catalog_policy_tag" "sensitive_tags" {
 }
 
 resource "google_bigquery_datapolicy_data_policy" "credit_limit" {
-  provider = google-beta
-
   project          = module.harness_projects.data_governance_project_id
   location         = local.location
   data_policy_id   = "credit_limit"
@@ -115,7 +108,6 @@ resource "google_bigquery_datapolicy_data_policy" "credit_limit" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "credit_limit" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.credit_limit.project
@@ -126,8 +118,6 @@ resource "google_bigquery_datapolicy_data_policy_iam_member" "credit_limit" {
 }
 
 resource "google_bigquery_datapolicy_data_policy" "card_type_full_name" {
-  provider = google-beta
-
   project          = module.harness_projects.data_governance_project_id
   location         = local.location
   data_policy_id   = "card_type_full_name"
@@ -140,7 +130,6 @@ resource "google_bigquery_datapolicy_data_policy" "card_type_full_name" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_full_name" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.card_type_full_name.project
@@ -151,8 +140,6 @@ resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_full_nam
 }
 
 resource "google_bigquery_datapolicy_data_policy" "card_type_code" {
-  provider = google-beta
-
   project          = module.harness_projects.data_governance_project_id
   location         = local.location
   data_policy_id   = "card_type_code"
@@ -165,7 +152,6 @@ resource "google_bigquery_datapolicy_data_policy" "card_type_code" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_code_member" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.card_type_code.project
@@ -180,8 +166,6 @@ data "google_bigquery_default_service_account" "bq_sa" {
 }
 
 resource "google_data_catalog_taxonomy_iam_binding" "data_bq_binding" {
-  provider = google-beta
-
   project  = module.harness_projects.data_governance_project_id
   taxonomy = google_data_catalog_taxonomy.secure_taxonomy.name
   role     = "roles/datacatalog.categoryFineGrainedReader"
@@ -192,8 +176,6 @@ resource "google_data_catalog_taxonomy_iam_binding" "data_bq_binding" {
 }
 
 resource "google_data_catalog_taxonomy_iam_binding" "cloudfunction_sa_viewer" {
-  provider = google-beta
-
   project  = module.harness_projects.data_governance_project_id
   taxonomy = google_data_catalog_taxonomy.secure_taxonomy.name
   role     = "roles/datacatalog.viewer"
@@ -247,7 +229,7 @@ resource "google_bigquery_table" "credit_card" {
 */
 module "kek_wrapping_key" {
   source  = "terraform-google-modules/kms/google"
-  version = "2.2.1"
+  version = "4.0.0"
 
   project_id           = module.harness_projects.data_governance_project_id
   labels               = { environment = "dev" }
@@ -264,7 +246,6 @@ module "kek_wrapping_key" {
 }
 
 resource "google_kms_crypto_key_iam_member" "plaintext_reader_group_key" {
-
   crypto_key_id = module.kek_wrapping_key.keys[local.kek_key_name]
   role          = "roles/cloudkms.cryptoKeyDecrypterViaDelegation"
   member        = "group:${var.plaintext_reader_group}"
@@ -377,7 +358,6 @@ resource "google_bigquery_job" "load_job" {
   ]
 }
 
-
 /**
 * BigQuery AEAD decrypt view
 * See:
@@ -429,7 +409,6 @@ resource "google_bigquery_table_iam_member" "encrypted_credit_card_data_viewer" 
   role       = "roles/bigquery.dataViewer"
   member     = "group:${var.encrypted_data_reader_group}"
 }
-
 
 resource "google_bigquery_table_iam_member" "plaintext_credit_card_data_viewer" {
   project    = module.harness_projects.data_project_id
@@ -515,7 +494,7 @@ module "dlp_scanner" {
 */
 module "pubsub_to_bigquery" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 5.0"
+  version = "~> 8.0"
 
   project_id         = module.harness_projects.data_ingestion_project_id
   topic              = "pubsub_to_bigquery_topic"
@@ -625,7 +604,7 @@ resource "google_project_iam_member" "run_identity_services" {
 
 module "serverless_connector" {
   source  = "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta"
-  version = "~> 6.0.1"
+  version = "~> 10.0.0"
 
   project_id = module.harness_projects.data_ingestion_project_id
   vpc_connectors = [{
@@ -635,7 +614,6 @@ module "serverless_connector" {
     machine_type    = "e2-micro"
     min_instances   = 2
     max_instances   = 7
-    max_throughput  = 700
     subnet_name     = module.harness_projects.data_ingestion_subnet_name
     }
   ]
@@ -649,7 +627,7 @@ module "serverless_connector" {
 
 module "firewall_rules" {
   source  = "terraform-google-modules/network/google//modules/firewall-rules"
-  version = "6.0.1"
+  version = "10.0.0"
 
   project_id   = module.harness_projects.data_ingestion_project_id
   network_name = module.harness_projects.data_ingestion_network_name
@@ -921,6 +899,7 @@ resource "google_cloudfunctions2_function" "function" {
         object = google_storage_bucket_object.zip.name
       }
     }
+    service_account = "projects/${module.harness_projects.data_ingestion_project_id}/serviceAccounts/${module.secured_data_warehouse_onprem_ingest.cloudfunction_controller_service_account_email}"
   }
 
   service_config {
@@ -963,8 +942,6 @@ resource "google_cloudfunctions2_function" "function" {
 */
 # Permission to let datafow service account to access the templates
 resource "google_artifact_registry_repository_iam_member" "docker_reader" {
-  provider = google-beta
-
   project    = module.harness_artifact_registry_project.project_id
   location   = local.location
   repository = "flex-templates"
@@ -978,8 +955,6 @@ resource "google_artifact_registry_repository_iam_member" "docker_reader" {
 
 # Permission to let dataflow service account to access the templates
 resource "google_artifact_registry_repository_iam_member" "python_reader" {
-  provider = google-beta
-
   project    = module.harness_artifact_registry_project.project_id
   location   = local.location
   repository = "python-modules"
@@ -999,24 +974,27 @@ resource "google_dataflow_flex_template_job" "dataflow_flex_template_job" {
   container_spec_gcs_path = module.build_flex_template.template_gs_path
   region                  = local.location
   on_delete               = "cancel"
+  service_account_email   = module.secured_data_warehouse_onprem_ingest.dataflow_controller_service_account_email
+
+  max_workers             = 1
+  enable_streaming_engine = true
+  staging_location        = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/staging/"
+  temp_location           = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/tmp/"
+  kms_key_name            = module.secured_data_warehouse_onprem_ingest.cmek_data_ingestion_crypto_key
+  subnetwork              = module.harness_projects.data_ingestion_subnets_self_link
+  ip_configuration        = "WORKER_IP_PRIVATE"
+  additional_experiments = [
+    "enable_kms_on_streaming_engine",
+  ]
 
   parameters = {
-    input_topic             = "projects/${module.harness_projects.data_ingestion_project_id}/topics/${module.secured_data_warehouse_onprem_ingest.data_ingestion_topic_name}"
-    bq_schema               = local.bq_schema
-    output_table            = "${module.harness_projects.data_project_id}:${local.dataset_id}.${local.table_id}"
-    service_account_email   = module.secured_data_warehouse_onprem_ingest.dataflow_controller_service_account_email
-    subnetwork              = module.harness_projects.data_ingestion_subnets_self_link
-    dataflow_kms_key        = module.secured_data_warehouse_onprem_ingest.cmek_data_ingestion_crypto_key
-    temp_location           = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/tmp/"
-    staging_location        = "gs://${module.secured_data_warehouse_onprem_ingest.data_ingestion_dataflow_bucket_name}/staging/"
-    max_num_workers         = 1
-    no_use_public_ips       = true
-    enable_streaming_engine = true
-    experiments             = "enable_kms_on_streaming_engine"
+    input_topic  = "projects/${module.harness_projects.data_ingestion_project_id}/topics/${module.secured_data_warehouse_onprem_ingest.data_ingestion_topic_name}"
+    bq_schema    = local.bq_schema
+    output_table = "${module.harness_projects.data_project_id}:${local.dataset_id}.${local.table_id}"
   }
 
   depends_on = [
     google_artifact_registry_repository_iam_member.docker_reader,
-    google_artifact_registry_repository_iam_member.python_reader
+    google_artifact_registry_repository_iam_member.python_reader,
   ]
 }

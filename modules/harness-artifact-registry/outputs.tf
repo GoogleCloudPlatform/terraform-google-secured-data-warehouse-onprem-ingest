@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,11 @@ output "python_flex_template_repository_id" {
 output "cloudbuild_bucket_name" {
   description = "The name of the Google Storage Bucket used to save temporary files in Cloud Build builds."
   value       = google_storage_bucket.cloudbuild_bucket.name
+}
+
+output "cloudbuild_builder_email" {
+  description = "The email of the service account used in the build steps."
+  value       = google_service_account.cloud_builder.email
 }
 
 output "pip_index_url" {

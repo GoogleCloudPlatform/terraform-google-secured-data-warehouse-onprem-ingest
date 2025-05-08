@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,18 @@ locals {
   ]
 
   cloudfunction_data_project_roles = [
-    "roles/eventarc.eventReceiver",
+    "roles/artifactregistry.writer",
     "roles/bigquery.dataEditor",
-    "roles/bigquery.jobUser"
+    "roles/bigquery.jobUser",
+    "roles/eventarc.eventReceiver",
+    "roles/logging.logWriter",
   ]
 }
 
 //Dataflow controller service account
 module "dataflow_controller_service_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.1.1"
+  version = "4.5.0"
 
   project_id   = var.data_ingestion_project_id
   names        = ["sa-dataflow-controller"]
@@ -97,7 +99,7 @@ resource "google_service_account" "pubsub_writer_service_account" {
 // Cloud Function service account
 module "cloudfunction_controller_service_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.2"
+  version = "4.5"
 
   project_id   = var.data_ingestion_project_id
   names        = ["sa-cloudfunction-controller"]

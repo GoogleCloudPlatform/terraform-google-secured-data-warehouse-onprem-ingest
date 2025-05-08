@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ resource "random_id" "project_id_suffix" {
 
 module "data_ingestion_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "18.0"
 
   name                    = local.data_ingestion_project_name
   random_project_id       = "true"
@@ -35,6 +35,7 @@ module "data_ingestion_project" {
   folder_id               = var.folder_id
   billing_account         = var.billing_account
   default_service_account = "deprivilege"
+  deletion_policy         = var.deletion_policy
 
   activate_apis = [
     "vpcaccess.googleapis.com",
@@ -65,7 +66,7 @@ module "data_ingestion_project" {
 
 module "data_governance_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "18.0"
 
   name                    = local.data_governance_project_name
   random_project_id       = "true"
@@ -74,6 +75,7 @@ module "data_governance_project" {
   folder_id               = var.folder_id
   billing_account         = var.billing_account
   default_service_account = "deprivilege"
+  deletion_policy         = var.deletion_policy
 
   activate_apis = [
     "cloudbuild.googleapis.com",
@@ -93,9 +95,22 @@ module "data_governance_project" {
   ]
 }
 
+resource "google_project_service_identity" "data_governance_service_agents" {
+  provider = google-beta
+
+  for_each = toset(
+    [
+      "storage.googleapis.com",
+      "cloudkms.googleapis.com",
+    ]
+  )
+  project = module.data_governance_project.project_id
+  service = each.key
+}
+
 module "data_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "14.0"
+  version = "18.0"
 
   name                    = local.data_project_name
   random_project_id       = "true"
@@ -104,6 +119,7 @@ module "data_project" {
   folder_id               = var.folder_id
   billing_account         = var.billing_account
   default_service_account = "deprivilege"
+  deletion_policy         = var.deletion_policy
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

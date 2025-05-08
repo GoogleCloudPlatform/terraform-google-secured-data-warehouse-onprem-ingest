@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,8 +96,6 @@ data "external" "dek_wrapped_key" {
 }
 
 resource "google_data_catalog_taxonomy" "secure_taxonomy" {
-  provider = google-beta
-
   project                = local.data_governance_project_id
   region                 = local.location
   display_name           = local.taxonomy_display_name
@@ -106,15 +104,12 @@ resource "google_data_catalog_taxonomy" "secure_taxonomy" {
 }
 
 resource "google_data_catalog_policy_tag" "policy_tag_sensitive" {
-  provider = google-beta
-
   taxonomy     = google_data_catalog_taxonomy.secure_taxonomy.id
   display_name = "1_Sensitive"
   description  = "Data not meant to be public."
 }
 
 resource "google_data_catalog_policy_tag" "sensitive_tags" {
-  provider = google-beta
   for_each = local.sensitive_tags
 
   taxonomy          = google_data_catalog_taxonomy.secure_taxonomy.id
@@ -124,8 +119,6 @@ resource "google_data_catalog_policy_tag" "sensitive_tags" {
 }
 
 resource "google_bigquery_datapolicy_data_policy" "credit_limit" {
-  provider = google-beta
-
   project          = local.data_governance_project_id
   location         = local.location
   data_policy_id   = "credit_limit"
@@ -138,7 +131,6 @@ resource "google_bigquery_datapolicy_data_policy" "credit_limit" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "credit_limit" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.credit_limit.project
@@ -149,8 +141,6 @@ resource "google_bigquery_datapolicy_data_policy_iam_member" "credit_limit" {
 }
 
 resource "google_bigquery_datapolicy_data_policy" "card_type_full_name" {
-  provider = google-beta
-
   project          = local.data_governance_project_id
   location         = local.location
   data_policy_id   = "card_type_full_name"
@@ -163,7 +153,6 @@ resource "google_bigquery_datapolicy_data_policy" "card_type_full_name" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_full_name" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.card_type_full_name.project
@@ -174,8 +163,6 @@ resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_full_nam
 }
 
 resource "google_bigquery_datapolicy_data_policy" "card_type_code" {
-  provider = google-beta
-
   project          = local.data_governance_project_id
   location         = local.location
   data_policy_id   = "card_type_code"
@@ -188,7 +175,6 @@ resource "google_bigquery_datapolicy_data_policy" "card_type_code" {
 }
 
 resource "google_bigquery_datapolicy_data_policy_iam_member" "card_type_code_member" {
-  provider = google-beta
   for_each = local.masked_reader_groups
 
   project        = google_bigquery_datapolicy_data_policy.card_type_code.project
@@ -203,8 +189,6 @@ data "google_bigquery_default_service_account" "bq_sa" {
 }
 
 resource "google_data_catalog_taxonomy_iam_binding" "bq_binding" {
-  provider = google-beta
-
   project  = local.data_governance_project_id
   taxonomy = google_data_catalog_taxonomy.secure_taxonomy.name
   role     = "roles/datacatalog.categoryFineGrainedReader"
@@ -364,7 +348,7 @@ resource "google_bigquery_table_iam_member" "dataViewer" {
 
 module "pubsub_to_bigquery" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 5.0"
+  version = "~> 8.0"
 
   project_id         = local.data_ingestion_project_id
   topic              = "pubsub_to_bigquery_topic"
