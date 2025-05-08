@@ -95,6 +95,19 @@ module "data_governance_project" {
   ]
 }
 
+resource "google_project_service_identity" "data_governance_service_agents" {
+  provider = google-beta
+
+  for_each = toset(
+    [
+      "storage.googleapis.com",
+      "cloudkms.googleapis.com",
+    ]
+  )
+  project = module.data_governance_project.project_id
+  service = each.key
+}
+
 module "data_project" {
   source  = "terraform-google-modules/project-factory/google"
   version = "18.0"

@@ -263,20 +263,6 @@ resource "google_project_service_identity" "dlp_identity_sa" {
   service = "dlp.googleapis.com"
 }
 
-resource "google_project_service_identity" "gs_identity_sa" {
-  provider = google-beta
-
-  project = var.data_governance_project_id
-  service = "storage.googleapis.com"
-}
-
-resource "google_project_service_identity" "kms_identity_sa" {
-  provider = google-beta
-
-  project = var.data_governance_project_id
-  service = "cloudkms.googleapis.com"
-}
-
 resource "google_access_context_manager_access_policy" "access_policy" {
   count  = var.access_context_manager_policy_id != "" ? 0 : 1
   parent = "organizations/${var.org_id}"

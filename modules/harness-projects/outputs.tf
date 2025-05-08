@@ -28,7 +28,8 @@ output "data_governance_project_id" {
   value       = module.data_governance_project.project_id
 
   depends_on = [
-    module.data_governance_project
+    module.data_governance_project,
+    google_project_service_identity.data_governance_service_agents,
   ]
 }
 
