@@ -81,6 +81,11 @@ Make sure you have your subnetwork configured as the [Subnetwork section](#subne
 
 Enabling Streaming Engine is important to ensure all the performance benefits of the infrastructure. You can learn more about it in the [documentation](https://cloud.google.com/dataflow/docs/guides/deploying-a-pipeline#streaming-engine).
 
+## Enable Confidential Computing
+
+Enabling Confidential Computing helps to ensure the data can't be read or modified while in use. For more information check [Confidential Computing concepts](https://cloud.google.com/confidential-computing/confidential-vm/docs/confidential-vm-overview).
+You can access the list of confidential computing supported machines [here](https://cloud.google.com/confidential-computing/confidential-vm/docs/supported-configurations).
+
 ## Deploying Dataflow Flex Jobs
 
 We recommend the usage of [Flex Job Templates](https://cloud.google.com/dataflow/docs/guides/templates/using-flex-templates).
