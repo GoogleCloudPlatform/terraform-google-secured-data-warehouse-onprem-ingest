@@ -152,6 +152,17 @@ variable "data_ingestion_dataflow_deployer_identities" {
   default     = []
 }
 
+variable "database_type" {
+  description = "Type of database where the data will be persisted. Available values are: \"POSTGRES\", \"BIG_QUERY\"."
+  type        = string
+  default     = "BIG_QUERY"
+
+  validation {
+    condition     = contains(["BIG_QUERY", "POSTGRESQL"], var.database_type)
+    error_message = "Allowed values are: \"BIG_QUERY\", \"POSTGRESQL\"."
+  }
+}
+
 /**
 * BigQuery variables
 */
@@ -372,4 +383,21 @@ variable "enable_bigquery_read_roles_in_data_ingestion" {
   description = "(Optional) If set to true, it will grant to the dataflow controller service account created in the data ingestion project the necessary roles to read from a bigquery table."
   type        = bool
   default     = false
+}
+
+/**
+*PostgreSQL variables
+*/
+
+variable "postgresql" {
+  type = object(
+    {
+      version                     = string
+      maintenance_version         = optional(string, null)
+      deletion_protection_enabled = optional(bool, true)
+      machine_type                = string
+    }
+  )
+  nullable = true
+  default  = null
 }
