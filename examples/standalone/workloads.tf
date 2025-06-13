@@ -983,8 +983,10 @@ resource "google_dataflow_flex_template_job" "dataflow_flex_template_job" {
   kms_key_name            = module.secured_data_warehouse_onprem_ingest.cmek_data_ingestion_crypto_key
   subnetwork              = module.harness_projects.data_ingestion_subnets_self_link
   ip_configuration        = "WORKER_IP_PRIVATE"
+  machine_type            = "n2d-standard-2" # For confidential computing supported machines list access: <https://cloud.google.com/confidential-computing/confidential-vm/docs/supported-configurations>
   additional_experiments = [
     "enable_kms_on_streaming_engine",
+    "enable_confidential_compute",
   ]
 
   parameters = {
