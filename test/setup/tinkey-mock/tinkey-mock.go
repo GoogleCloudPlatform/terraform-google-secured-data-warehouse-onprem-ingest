@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2023-2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/tink/go/aead"
-	"github.com/google/tink/go/core/registry"
-	"github.com/google/tink/go/daead"
-	"github.com/google/tink/go/integration/gcpkms"
-	"github.com/google/tink/go/keyset"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
+	"github.com/tink-crypto/tink-go-gcpkms/v2/integration/gcpkms"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/core/registry"
+	"github.com/tink-crypto/tink-go/v2/daead"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
 )
 
 // generator config
