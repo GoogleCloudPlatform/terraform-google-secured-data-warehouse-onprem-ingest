@@ -392,12 +392,30 @@ variable "enable_bigquery_read_roles_in_data_ingestion" {
 variable "postgresql" {
   type = object(
     {
-      version                     = string
-      maintenance_version         = optional(string, null)
-      deletion_protection_enabled = optional(bool, true)
-      machine_type                = string
+      version                         = string
+      maintenance_version             = optional(string, null)
+      deletion_protection_enabled     = optional(bool, true)
+      machine_type                    = string
+      tier                            = optional(string, null)
+      availability_type               = optional(string, null)
+      maintenance_version             = optional(string, null)
+      maintenance_window_day          = optional(string, null)
+      maintenance_window_hour         = optional(string, null)
+      maintenance_window_update_track = optional(string, null)
+      database_flags = optional(
+        list(
+          object(
+            {
+              name  = string
+              value = string
+            }
+          )
+        ),
+        []
+      )
     }
   )
-  nullable = true
-  default  = null
+  nullable    = true
+  default     = null
+  description = "PostgreSQL configuration. For value details check: <https://registry.terraform.io/modules/terraform-google-modules/sql-db/google/latest/submodules/postgresql>."
 }
