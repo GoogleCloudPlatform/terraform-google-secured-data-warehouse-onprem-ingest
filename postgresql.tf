@@ -56,10 +56,12 @@ module "postgresql" {
 
   iam_users = [
     {
+      id    = "PLAINTEXT_READER_GROUP"
       email = var.plaintext_reader_group
       type  = "CLOUD_IAM_GROUP"
     },
     {
+      id    = "ENCRYPTED_DATA_READER_GROUP"
       email = var.encrypted_data_reader_group
       type  = "CLOUD_IAM_GROUP"
     }
