@@ -393,7 +393,6 @@ variable "postgresql" {
   type = object(
     {
       version                         = string
-      maintenance_version             = optional(string, null)
       deletion_protection_enabled     = optional(bool, true)
       machine_type                    = string
       tier                            = optional(string, null)
