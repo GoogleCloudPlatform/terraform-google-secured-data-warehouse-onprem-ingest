@@ -398,9 +398,10 @@ variable "postgresql" {
       tier                            = optional(string, null)
       availability_type               = optional(string, null)
       maintenance_version             = optional(string, null)
-      maintenance_window_day          = optional(string, null)
-      maintenance_window_hour         = optional(string, null)
+      maintenance_window_day          = optional(number, null)
+      maintenance_window_hour         = optional(number, null)
       maintenance_window_update_track = optional(string, null)
+      database_version                = optional(string, null)
       database_flags = optional(
         list(
           object(

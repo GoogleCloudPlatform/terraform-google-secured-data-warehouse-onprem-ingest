@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-locals {
-  postgresql_enabled = var.database_type == "POSTGRES"
-}
-
 module "postgresql" {
   source  = "terraform-google-modules/sql-db/google//modules/postgresql"
   version = "~> 25.2"
 
-  count = local.postgresql_enabled ? 1 : 0
-
   name                 = "data-warehouse"
   random_instance_name = true
-  project_id           = var.data_project_id
-  database_version     = var.postgresql.version
-  region               = var.location
+  project_id           = var.project_id
+  database_version     = var.database_version
+  region               = var.region
 
-  tier                            = var.postgresql.tier
-  availability_type               = var.postgresql.availability_type
-  maintenance_version             = var.postgresql.maintenance_version
-  maintenance_window_day          = var.postgresql.maintenance_window_day
-  maintenance_window_hour         = var.postgresql.maintenance_window_hour
-  maintenance_window_update_track = var.postgresql.maintenance_window_update_track
+  tier = var.tier
 
-  deletion_protection         = var.postgresql.deletion_protection_enabled
-  deletion_protection_enabled = var.postgresql.deletion_protection_enabled
+  maintenance_version     = var.maintenance_version
+  maintenance_window_day  = var.maintenance_window_day
+  maintenance_window_hour = var.maintenance_window_hour
+
+  deletion_protection         = var.deletion_protection
+  deletion_protection_enabled = var.deletion_protection
 
   database_flags = concat(
     [
@@ -47,13 +40,8 @@ module "postgresql" {
         value = "on"
       }
     ],
-    var.postgresql.database_flags,
+    var.database_flags,
   )
-  ip_configuration = {
-    ssl_mode     = "ENCRYPTED_ONLY"
-    ipv4_enabled = true
-  }
-
   iam_users = [
     {
       id    = "PLAINTEXT_READER_GROUP"
@@ -68,18 +56,15 @@ module "postgresql" {
   ]
 }
 
-resource "google_project_iam_member" "sql_groups_instance_users" {
+resource "google_project_iam_member" "instance_users" {
   for_each = toset(
-    local.postgresql_enabled ?
     [
       var.plaintext_reader_group,
       var.encrypted_data_reader_group,
     ]
-    :
-    []
   )
 
   role    = "roles/cloudsql.instanceUser"
-  project = var.data_project_id
+  project = var.project_id
   member  = "group:${each.key}"
 }
