@@ -156,7 +156,7 @@ module "bigquery_data" {
 module "postgresql_data" {
   source = "./modules/postgresql-data"
 
-  count = var.database_type == "POSTGRESQL" ? 1 : 0
+  count = var.postgresql != null ? 1 : 0
 
   project_id          = var.data_project_id
   region              = var.location
