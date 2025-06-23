@@ -382,7 +382,7 @@ variable "postgresql" {
   type = object(
     {
       deletion_protection_enabled     = optional(bool, true)
-      tier                            = optional(string, null)
+      tier                            = string
       availability_type               = optional(string, null)
       maintenance_version             = optional(string, null)
       maintenance_window_day          = optional(number, null)
