@@ -1,0 +1,191 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-google-secured-data-warehouse-onprem-ingest-display
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  info:
+    title: Secured Data Warehouse On-premisses Data Ingestion Blueprint
+    source:
+      repo: https://github.com/guilherme-hosoda-cit/terraform-google-secured-data-warehouse-onprem-ingest.git
+      sourceType: git
+  ui:
+    input:
+      variables:
+        access_context_manager_policy_id:
+          name: access_context_manager_policy_id
+          title: Access Context Manager Policy Id
+        access_level_ip_subnetworks:
+          name: access_level_ip_subnetworks
+          title: Access Level Ip Subnetworks
+        add_project_to_data_governance_perimeter:
+          name: add_project_to_data_governance_perimeter
+          title: Add Project To Data Governance Perimeter
+        add_project_to_data_ingestion_perimeter:
+          name: add_project_to_data_ingestion_perimeter
+          title: Add Project To Data Ingestion Perimeter
+        add_project_to_data_perimeter:
+          name: add_project_to_data_perimeter
+          title: Add Project To Data Perimeter
+        bucket_class:
+          name: bucket_class
+          title: Bucket Class
+        bucket_lifecycle_rules:
+          name: bucket_lifecycle_rules
+          title: Bucket Lifecycle Rules
+        bucket_name:
+          name: bucket_name
+          title: Bucket Name
+        cmek_keyring_name:
+          name: cmek_keyring_name
+          title: Cmek Keyring Name
+        custom_restricted_services:
+          name: custom_restricted_services
+          title: Custom Restricted Services
+        data_analyst_group:
+          name: data_analyst_group
+          title: Data Analyst Group
+        data_egress_policies:
+          name: data_egress_policies
+          title: Data Egress Policies
+        data_engineer_group:
+          name: data_engineer_group
+          title: Data Engineer Group
+        data_governance_egress_policies:
+          name: data_governance_egress_policies
+          title: Data Governance Egress Policies
+        data_governance_ingress_policies:
+          name: data_governance_ingress_policies
+          title: Data Governance Ingress Policies
+        data_governance_perimeter:
+          name: data_governance_perimeter
+          title: Data Governance Perimeter
+        data_governance_project_id:
+          name: data_governance_project_id
+          title: Data Governance Project Id
+        data_governance_project_number:
+          name: data_governance_project_number
+          title: Data Governance Project Number
+        data_ingestion_dataflow_deployer_identities:
+          name: data_ingestion_dataflow_deployer_identities
+          title: Data Ingestion Dataflow Deployer Identities
+        data_ingestion_egress_policies:
+          name: data_ingestion_egress_policies
+          title: Data Ingestion Egress Policies
+        data_ingestion_ingress_policies:
+          name: data_ingestion_ingress_policies
+          title: Data Ingestion Ingress Policies
+        data_ingestion_perimeter:
+          name: data_ingestion_perimeter
+          title: Data Ingestion Perimeter
+        data_ingestion_project_id:
+          name: data_ingestion_project_id
+          title: Data Ingestion Project Id
+        data_ingestion_project_number:
+          name: data_ingestion_project_number
+          title: Data Ingestion Project Number
+        data_ingress_policies:
+          name: data_ingress_policies
+          title: Data Ingress Policies
+        data_perimeter:
+          name: data_perimeter
+          title: Data Perimeter
+        data_project_id:
+          name: data_project_id
+          title: Data Project Id
+        data_project_number:
+          name: data_project_number
+          title: Data Project Number
+        dataset_default_table_expiration_ms:
+          name: dataset_default_table_expiration_ms
+          title: Dataset Default Table Expiration Ms
+        dataset_description:
+          name: dataset_description
+          title: Dataset Description
+        dataset_id:
+          name: dataset_id
+          title: Dataset Id
+        dataset_name:
+          name: dataset_name
+          title: Dataset Name
+        delete_contents_on_destroy:
+          name: delete_contents_on_destroy
+          title: Delete Contents On Destroy
+        dlp_output_dataset:
+          name: dlp_output_dataset
+          title: Dlp Output Dataset
+        domains_to_allow:
+          name: domains_to_allow
+          title: Domains To Allow
+        enable_bigquery_read_roles_in_data_ingestion:
+          name: enable_bigquery_read_roles_in_data_ingestion
+          title: Enable Bigquery Read Roles In Data Ingestion
+        encrypted_data_reader_group:
+          name: encrypted_data_reader_group
+          title: Encrypted Data Reader Group
+        key_rotation_period_seconds:
+          name: key_rotation_period_seconds
+          title: Key Rotation Period Seconds
+        kms_key_protection_level:
+          name: kms_key_protection_level
+          title: Kms Key Protection Level
+        labels:
+          name: labels
+          title: Labels
+        location:
+          name: location
+          title: Location
+        network_administrator_group:
+          name: network_administrator_group
+          title: Network Administrator Group
+        org_id:
+          name: org_id
+          title: Org Id
+        perimeter_additional_members:
+          name: perimeter_additional_members
+          title: Perimeter Additional Members
+        plaintext_reader_group:
+          name: plaintext_reader_group
+          title: Plaintext Reader Group
+        postgresql:
+          name: postgresql
+          title: Postgresql
+        pubsub_resource_location:
+          name: pubsub_resource_location
+          title: Pubsub Resource Location
+        remove_owner_role:
+          name: remove_owner_role
+          title: Remove Owner Role
+        sdx_project_number:
+          name: sdx_project_number
+          title: Sdx Project Number
+        security_administrator_group:
+          name: security_administrator_group
+          title: Security Administrator Group
+        security_analyst_group:
+          name: security_analyst_group
+          title: Security Analyst Group
+        terraform_service_account:
+          name: terraform_service_account
+          title: Terraform Service Account
+        trusted_locations:
+          name: trusted_locations
+          title: Trusted Locations
+        trusted_shared_vpc_subnetworks:
+          name: trusted_shared_vpc_subnetworks
+          title: Trusted Shared Vpc Subnetworks

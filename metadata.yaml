@@ -1,0 +1,451 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-google-secured-data-warehouse-onprem-ingest
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  info:
+    title: Secured Data Warehouse On-premisses Data Ingestion Blueprint
+    source:
+      repo: https://github.com/guilherme-hosoda-cit/terraform-google-secured-data-warehouse-onprem-ingest.git
+      sourceType: git
+    version: 0.1.0
+    actuationTool:
+      flavor: Terraform
+      version: ">= 1.3"
+    description: {}
+    icon: assets/icon.png
+  content:
+    subBlueprints:
+      - name: data
+        location: modules/data
+      - name: data-governance
+        location: modules/data-governance
+      - name: data-governance-sa
+        location: modules/data-governance-sa
+      - name: data-ingestion
+        location: modules/data-ingestion
+      - name: data-ingestion-sa
+        location: modules/data-ingestion-sa
+      - name: dlp-scanner
+        location: modules/dlp-scanner
+      - name: get-bq-encryption-sa
+        location: modules/get-bq-encryption-sa
+      - name: harness-artifact-registry
+        location: modules/harness-artifact-registry
+      - name: harness-build-flex-template
+        location: modules/harness-build-flex-template
+      - name: harness-logging
+        location: modules/harness-logging
+      - name: harness-projects
+        location: modules/harness-projects
+      - name: harness-upload-python-modules
+        location: modules/harness-upload-python-modules
+      - name: organization-policies
+        location: modules/organization-policies
+      - name: postgresql-data
+        location: modules/postgresql-data
+      - name: set-bq-project-cmek
+        location: modules/set-bq-project-cmek
+      - name: vpc-sc-config
+        location: modules/vpc-sc-config
+    examples:
+      - name: standalone
+        location: examples/standalone
+  interfaces:
+    variables:
+      - name: org_id
+        description: GCP Organization ID.
+        varType: string
+        required: true
+      - name: location
+        description: The location for the KMS Customer Managed Encryption Keys, Cloud Storage Buckets, and Bigquery datasets. This location can be a multi-region.
+        varType: string
+        defaultValue: us-east4
+      - name: labels
+        description: (Optional) Labels attached to Data Warehouse resources.
+        varType: map(string)
+        defaultValue: {}
+      - name: terraform_service_account
+        description: The email address of the service account that will run the Terraform code.
+        varType: string
+        required: true
+      - name: delete_contents_on_destroy
+        description: (Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present.
+        varType: bool
+        defaultValue: false
+      - name: data_ingestion_project_id
+        description: The ID of the project in which the data ingestion resources will be created.
+        varType: string
+        required: true
+      - name: data_governance_project_id
+        description: The ID of the project in which the data governance resources will be created.
+        varType: string
+        required: true
+      - name: data_project_id
+        description: Project where the datasets and tables are created.
+        varType: string
+        required: true
+      - name: data_ingestion_project_number
+        description: The project number in which the data ingestion resources will be created.
+        varType: string
+        required: true
+      - name: data_governance_project_number
+        description: The project number in which the data governance resources will be created.
+        varType: string
+        required: true
+      - name: data_project_number
+        description: The project number where the datasets and tables are created.
+        varType: string
+        required: true
+      - name: sdx_project_number
+        description: The Project Number to configure Secure data exchange with egress rule for dataflow templates. Required if using a dataflow job template from a private storage bucket outside of the perimeter.
+        varType: string
+        defaultValue: ""
+      - name: add_project_to_data_ingestion_perimeter
+        description: If the data ingestion project should be added to the data ingestion perimeter.
+        varType: bool
+        defaultValue: true
+      - name: add_project_to_data_governance_perimeter
+        description: If the data governance project should be added to the data governance perimeter.
+        varType: bool
+        defaultValue: true
+      - name: add_project_to_data_perimeter
+        description: If the data project should be added to the data perimeter.
+        varType: bool
+        defaultValue: true
+      - name: remove_owner_role
+        description: (Optional) If set to true, remove all owner roles in all projects in case it has been found in some project.
+        varType: bool
+        defaultValue: false
+      - name: security_administrator_group
+        description: Google Cloud IAM group that administers security configurations in the organization(org policies, KMS, VPC service perimeter).
+        varType: string
+        required: true
+      - name: network_administrator_group
+        description: Google Cloud IAM group that reviews network configuration. Typically, this includes members of the networking team.
+        varType: string
+        required: true
+      - name: security_analyst_group
+        description: Google Cloud IAM group that monitors and responds to security incidents.
+        varType: string
+        required: true
+      - name: data_analyst_group
+        description: Google Cloud IAM group that analyzes the data in the warehouse.
+        varType: string
+        required: true
+      - name: data_engineer_group
+        description: Google Cloud IAM group that sets up and maintains the data pipeline and warehouse.
+        varType: string
+        required: true
+      - name: plaintext_reader_group
+        description: Google Cloud IAM group that analyzes plaintext reader.
+        varType: string
+        required: true
+      - name: encrypted_data_reader_group
+        description: Google Cloud IAM group that analyzes encrypted data.
+        varType: string
+        required: true
+      - name: data_ingestion_dataflow_deployer_identities
+        description: "List of members in the standard GCP form: user:{email}, serviceAccount:{email} that will deploy Dataflow jobs in the Data Ingestion project. These identities will be added to the VPC-SC secure data exchange egress rules."
+        varType: list(string)
+        defaultValue: []
+      - name: dataset_id
+        description: Unique ID for the dataset being provisioned.
+        varType: string
+        defaultValue: data_dataset
+      - name: dataset_name
+        description: Friendly name for the dataset being provisioned.
+        varType: string
+        defaultValue: Data dataset
+      - name: dataset_description
+        description: Dataset description.
+        varType: string
+        defaultValue: Data dataset
+      - name: dataset_default_table_expiration_ms
+        description: TTL of tables using the dataset in MS. The default value is null.
+        varType: number
+      - name: dlp_output_dataset
+        description: Unique ID for the dataset being provisioned to host Cloud Data Loss Prevention (DLP) BigQuery scan results.
+        varType: string
+        defaultValue: dlp_scanner_output
+      - name: cmek_keyring_name
+        description: The Keyring prefix name for the KMS Customer Managed Encryption Keys being provisioned.
+        varType: string
+        required: true
+      - name: key_rotation_period_seconds
+        description: Rotation period for keys. The default value is 30 days.
+        varType: string
+        defaultValue: 2592000s
+      - name: kms_key_protection_level
+        description: "The protection level to use when creating a key. Possible values: [\"SOFTWARE\", \"HSM\"]"
+        varType: string
+        defaultValue: HSM
+      - name: access_context_manager_policy_id
+        description: The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+        varType: string
+        defaultValue: ""
+      - name: perimeter_additional_members
+        description: "The list additional members to be added on perimeter access. Prefix user: (user:email@email.com) or serviceAccount: (serviceAccount:my-service-account@email.com) is required."
+        varType: list(string)
+        defaultValue: []
+      - name: data_ingestion_ingress_policies
+        description: A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) for the Data Ingestion perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: data_ingestion_egress_policies
+        description: A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) for the Data Ingestion perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: data_governance_ingress_policies
+        description: A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) for the Data Ingestion perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: data_governance_egress_policies
+        description: A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) for the Data Governance perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: data_ingress_policies
+        description: A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) for the Data Ingestion perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: data_egress_policies
+        description: A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) for the Data perimeter, each list object has a `from` and `to` value that describes egress_from and egress_to. See also [secure data exchange](https://cloud.google.com/vpc-service-controls/docs/secure-data-exchange#allow_access_to_a_google_cloud_resource_outside_the_perimeter) and the [VPC-SC](https://github.com/terraform-google-modules/terraform-google-vpc-service-controls/blob/v3.1.0/modules/regular_service_perimeter/README.md) module.
+        varType: |-
+          list(object({
+              from = any
+              to   = any
+            }))
+        defaultValue: []
+      - name: custom_restricted_services
+        description: The list of custom Google services to be protected by the VPC-SC perimeters.
+        varType: list(string)
+        defaultValue: []
+      - name: data_ingestion_perimeter
+        description: Existing data ingestion perimeter to be used instead of the auto-created perimeter. The service account provided in the variable `terraform_service_account` must be in an access level member list for this perimeter **before** this perimeter can be used in this module.
+        varType: string
+        defaultValue: ""
+      - name: data_governance_perimeter
+        description: Existing data governance perimeter to be used instead of the auto-created perimeter. The service account provided in the variable `terraform_service_account` must be in an access level member list for this perimeter **before** this perimeter can be used in this module.
+        varType: string
+        defaultValue: ""
+      - name: data_perimeter
+        description: Existing data perimeter to be used instead of the auto-created perimeter. The service account provided in the variable `terraform_service_account` must be in an access level member list for this perimeter **before** this perimeter can be used in this module.
+        varType: string
+        defaultValue: ""
+      - name: trusted_locations
+        description: This is a list of trusted regions where location-based GCP resources can be created.
+        varType: list(string)
+        defaultValue:
+          - us-locations
+      - name: trusted_shared_vpc_subnetworks
+        description: The URI of the trusted Shared VPC subnetworks where resources will be allowed to be deployed. Used by 'Restrict Shared VPC Subnetworks' Organization Policy. Format 'projects/PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK-NAME'.
+        varType: list(string)
+        defaultValue: []
+      - name: domains_to_allow
+        description: The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the blueprint. To add other domains you must also grant access to these domains to the terraform service account used in the deploy.
+        varType: list(string)
+        defaultValue: []
+      - name: access_level_ip_subnetworks
+        description: Condition - A list of CIDR block IP subnetwork specification. May be IPv4 or IPv6. Note that for a CIDR IP address block, the specified IP address portion must be properly truncated (that is, all the host bits must be zero) or the input is considered malformed. For example, "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. Similarly, for IPv6, "2001:db8::/32" is accepted whereas "2001:db8::1/32" is not. The originating IP of a request must be in one of the listed subnets in order for this Condition to be true. If empty, all IP addresses are allowed.
+        varType: list(string)
+        defaultValue: []
+      - name: pubsub_resource_location
+        description: The location in which the messages published to Pub/Sub will be persisted. This location cannot be a multi-region.
+        varType: string
+        defaultValue: us-east4
+      - name: bucket_name
+        description: The name of the bucket being provisioned.
+        varType: string
+        required: true
+      - name: bucket_class
+        description: The storage class for the bucket being provisioned.
+        varType: string
+        defaultValue: STANDARD
+      - name: bucket_lifecycle_rules
+        description: List of lifecycle rules to configure. Format is the same as described in provider documentation https://www.terraform.io/docs/providers/google/r/storage_bucket.html#lifecycle_rule except condition.matches_storage_class should be a comma delimited string.
+        varType: |-
+          set(object({
+              action    = any
+              condition = any
+            }))
+        defaultValue:
+          - action:
+              type: Delete
+            condition:
+              age: 30
+              matches_storage_class: STANDARD
+              with_state: ANY
+      - name: enable_bigquery_read_roles_in_data_ingestion
+        description: (Optional) If set to true, it will grant to the dataflow controller service account created in the data ingestion project the necessary roles to read from a bigquery table.
+        varType: bool
+        defaultValue: false
+      - name: postgresql
+        description: "PostgreSQL configuration. For value details check: <https://registry.terraform.io/modules/terraform-google-modules/sql-db/google/latest/submodules/postgresql>."
+        varType: |-
+          object(
+              {
+                deletion_protection_enabled     = optional(bool, true)
+                tier                            = string
+                availability_type               = optional(string, null)
+                maintenance_version             = optional(string, null)
+                maintenance_window_day          = optional(number, 1)
+                maintenance_window_hour         = optional(number, 23)
+                maintenance_window_update_track = optional(string, null)
+                edition                         = optional(string, "ENTERPRISE_PLUS")
+                database_version                = string
+                database_flags = optional(
+                  list(
+                    object(
+                      {
+                        name  = string
+                        value = string
+                      }
+                    )
+                  ),
+                  []
+                )
+              }
+            )
+    outputs:
+      - name: cloudfunction_controller_service_account_email
+        description: The Cloud Function controller service account email.
+      - name: cmek_data_bigquery_crypto_key
+        description: The Customer Managed Crypto Key for the BigQuery service.
+      - name: cmek_data_ingestion_crypto_key
+        description: The Customer Managed Crypto Key for the data ingestion crypto boundary.
+      - name: cmek_keyring_name
+        description: The Keyring name for the KMS Customer Managed Encryption Keys.
+      - name: cmek_reidentification_crypto_key
+        description: The Customer Managed Crypto Key for the crypto boundary.
+      - name: data_access_level_name
+        description: Access context manager access level name.
+      - name: data_governance_access_level_name
+        description: Access context manager access level name.
+      - name: data_governance_service_perimeter_name
+        description: Access context manager service perimeter name.
+      - name: data_ingestion_access_level_name
+        description: Access context manager access level name.
+      - name: data_ingestion_bucket_name
+        description: The name of the bucket created for the data ingestion pipeline.
+      - name: data_ingestion_cloudfunction_bucket_name
+        description: The name of the bucket created for cloud function in the data ingestion pipeline.
+      - name: data_ingestion_dataflow_bucket_name
+        description: The name of the staging bucket created for dataflow in the data ingestion pipeline.
+      - name: data_ingestion_service_perimeter_name
+        description: Access context manager service perimeter name.
+      - name: data_ingestion_topic_name
+        description: The topic created for data ingestion pipeline.
+      - name: data_service_perimeter_name
+        description: Access context manager service perimeter name.
+      - name: dataflow_controller_service_account_email
+        description: The Dataflow controller service account email. Required to deploy Dataflow jobs. See https://cloud.google.com/dataflow/docs/concepts/security-and-permissions#specifying_a_user-managed_controller_service_account.
+      - name: dataset
+        description: The BigQuery Dataset for the Data project.
+      - name: dataset_id
+        description: The ID of the dataset created for the Data project.
+      - name: dlp_output_dataset
+        description: The Dataset ID for DLP output data.
+      - name: postgresql_instance_ip_address
+        description: PostgreSQL master instance ip address.
+      - name: postgresql_instance_name
+        description: PostgreSQL instance name.
+      - name: postgresql_user_name
+        description: PostgreSQL root user name.
+      - name: postgresql_user_password
+        description: PostgreSQL root user password.
+      - name: pubsub_writer_service_account_email
+        description: The PubSub writer service account email. Should be used to write data to the PubSub topics the data ingestion pipeline reads from.
+      - name: storage_writer_service_account_email
+        description: The Storage writer service account email. Should be used to write data to the buckets the data ingestion pipeline reads from.
+  requirements:
+    roles:
+      - level: Project
+        roles:
+          - roles/owner
+      - level: Project
+        roles:
+          - roles/orgpolicy.policyAdmin
+          - roles/accesscontextmanager.policyAdmin
+          - roles/resourcemanager.organizationAdmin
+          - roles/billing.user
+      - level: Project
+        roles:
+          - roles/resourcemanager.folderAdmin
+          - roles/resourcemanager.projectCreator
+          - roles/resourcemanager.projectDeleter
+          - roles/resourcemanager.projectIamAdmin
+          - roles/compute.xpnAdmin
+          - roles/compute.networkAdmin
+          - roles/cloudkms.cryptoOperator
+          - roles/vpcaccess.admin
+          - roles/logging.admin
+          - roles/iam.serviceAccountTokenCreator
+          - roles/iam.serviceAccountAdmin
+          - roles/serviceusage.serviceUsageAdmin
+    services:
+      - accesscontextmanager.googleapis.com
+      - artifactregistry.googleapis.com
+      - bigquery.googleapis.com
+      - cloudbilling.googleapis.com
+      - cloudbuild.googleapis.com
+      - cloudkms.googleapis.com
+      - cloudresourcemanager.googleapis.com
+      - cloudscheduler.googleapis.com
+      - compute.googleapis.com
+      - datacatalog.googleapis.com
+      - dataflow.googleapis.com
+      - dlp.googleapis.com
+      - dns.googleapis.com
+      - iam.googleapis.com
+      - pubsub.googleapis.com
+      - secretmanager.googleapis.com
+      - serviceusage.googleapis.com
+      - sqladmin.googleapis.com
+      - storage-api.googleapis.com
+    providerVersions:
+      - source: hashicorp/google
+        version: ">= 5.43.0, < 7.0"
+      - source: hashicorp/google-beta
+        version: < 7.0
+      - source: hashicorp/null
+        version: 3.2.1
+      - source: hashicorp/random
+        version: 3.5.1
+      - source: hashicorp/time
+        version: 0.9.1
