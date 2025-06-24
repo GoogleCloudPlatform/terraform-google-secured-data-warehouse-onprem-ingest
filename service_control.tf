@@ -219,7 +219,12 @@ locals {
             "methods" = [
               "*"
             ]
-          }
+          },
+          "sqladmin.googleapis.com" = {
+            "methods" = [
+              "*"
+            ]
+          },
         }
       }
     }

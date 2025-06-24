@@ -56,6 +56,12 @@ module "secured_data_warehouse_onprem_ingest" {
   // service account created in the data ingestion project the necessary roles to read from a bigquery table.
   enable_bigquery_read_roles_in_data_ingestion = true
 
+  postgresql = {
+    database_version            = "17"
+    deletion_protection_enabled = !var.delete_contents_on_destroy
+    tier                        = "db-f1-micro"
+  }
+
   depends_on = [
     google_project_iam_binding.remove_owner_role
   ]

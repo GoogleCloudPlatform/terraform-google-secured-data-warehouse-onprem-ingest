@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,6 +151,27 @@ module "bigquery_data" {
   depends_on = [
     time_sleep.wait_for_bridge_propagation
   ]
+}
+
+module "postgresql_data" {
+  source = "./modules/postgresql-data"
+
+  count = var.postgresql != null ? 1 : 0
+
+  project_id          = var.data_project_id
+  region              = var.location
+  tier                = var.postgresql.tier
+  deletion_protection = var.delete_contents_on_destroy
+
+  database_flags   = var.postgresql.database_flags
+  database_version = var.postgresql.database_version
+
+  maintenance_version     = var.postgresql.maintenance_version
+  maintenance_window_day  = var.postgresql.maintenance_window_day
+  maintenance_window_hour = var.postgresql.maintenance_window_hour
+
+  encrypted_data_reader_group = var.encrypted_data_reader_group
+  plaintext_reader_group      = var.plaintext_reader_group
 }
 
 /**
