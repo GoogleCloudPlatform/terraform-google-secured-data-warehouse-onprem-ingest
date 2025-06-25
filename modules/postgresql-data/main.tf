@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+locals {
+  user_name = "default"
+}
 
 module "postgresql" {
   source  = "terraform-google-modules/sql-db/google//modules/postgresql"
@@ -42,6 +45,7 @@ module "postgresql" {
     ],
     var.database_flags,
   )
+  user_name = local.user_name
   iam_users = [
     {
       id    = "PLAINTEXT_READER_GROUP"

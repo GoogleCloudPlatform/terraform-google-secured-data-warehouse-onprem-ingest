@@ -176,3 +176,27 @@ output "data_service_perimeter_name" {
   description = "Access context manager service perimeter name."
   value       = var.data_perimeter == "" ? module.data_vpc_sc[0].service_perimeter_name : ""
 }
+
+/**
+* PostgreSQL outputs
+*/
+output "postgresql_instance_name" {
+  description = "PostgreSQL instance name."
+  value       = var.postgresql != null ? module.postgresql_data[0].instance_name : null
+}
+
+output "postgresql_instance_ip_address" {
+  description = "PostgreSQL master instance ip address."
+  value       = var.postgresql != null ? module.postgresql_data[0].instance_ip_address : null
+}
+
+output "postgresql_user_name" {
+  description = "PostgreSQL root user name."
+  value       = var.postgresql != null ? module.postgresql_data[0].user_name : null
+}
+
+output "postgresql_user_password" {
+  description = "PostgreSQL root user password."
+  sensitive   = true
+  value       = var.postgresql != null ? module.postgresql_data[0].user_password : null
+}

@@ -155,6 +155,10 @@ Additional information related to the inputs and outputs of the module are detai
 | dataset | The BigQuery Dataset for the Data project. |
 | dataset\_id | The ID of the dataset created for the Data project. |
 | dlp\_output\_dataset | The Dataset ID for DLP output data. |
+| postgresql\_instance\_ip\_address | PostgreSQL master instance ip address. |
+| postgresql\_instance\_name | PostgreSQL instance name. |
+| postgresql\_user\_name | PostgreSQL root user name. |
+| postgresql\_user\_password | PostgreSQL root user password. |
 | pubsub\_writer\_service\_account\_email | The PubSub writer service account email. Should be used to write data to the PubSub topics the data ingestion pipeline reads from. |
 | storage\_writer\_service\_account\_email | The Storage writer service account email. Should be used to write data to the buckets the data ingestion pipeline reads from. |
 
