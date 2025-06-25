@@ -25,7 +25,7 @@ resource "time_sleep" "wait_harness_projects_creation" {
     module.harness_projects,
   ]
 
-  create_duration = "900m"
+  create_duration = "900s"
 }
 
 module "secured_data_warehouse_onprem_ingest" {
