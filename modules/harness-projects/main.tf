@@ -38,29 +38,30 @@ module "data_ingestion_project" {
   deletion_policy         = var.deletion_policy
 
   activate_apis = [
-    "vpcaccess.googleapis.com",
-    "container.googleapis.com",
-    "run.googleapis.com",
-    "eventarc.googleapis.com",
+    "accesscontextmanager.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudbilling.googleapis.com",
+    "cloudbuild.googleapis.com",
     "cloudbuild.googleapis.com",
     "cloudfunctions.googleapis.com",
-    "datacatalog.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "storage-api.googleapis.com",
-    "serviceusage.googleapis.com",
-    "iam.googleapis.com",
-    "dns.googleapis.com",
-    "pubsub.googleapis.com",
-    "bigquery.googleapis.com",
-    "accesscontextmanager.googleapis.com",
-    "cloudbilling.googleapis.com",
     "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "datacatalog.googleapis.com",
     "dataflow.googleapis.com",
     "dlp.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "compute.googleapis.com"
+    "dns.googleapis.com",
+    "eventarc.googleapis.com",
+    "iam.googleapis.com",
+    "pubsub.googleapis.com",
+    "run.googleapis.com",
+    "serviceusage.googleapis.com",
+    "sqladmin.googleapis.com",
+    "storage-api.googleapis.com",
+    "vpcaccess.googleapis.com",
   ]
 }
 
@@ -78,20 +79,21 @@ module "data_governance_project" {
   deletion_policy         = var.deletion_policy
 
   activate_apis = [
+    "accesscontextmanager.googleapis.com",
+    "bigquery.googleapis.com",
+    "bigquerydatapolicy.googleapis.com",
+    "cloudbilling.googleapis.com",
     "cloudbuild.googleapis.com",
     "cloudfunctions.googleapis.com",
-    "datacatalog.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "storage-api.googleapis.com",
-    "serviceusage.googleapis.com",
-    "iam.googleapis.com",
-    "accesscontextmanager.googleapis.com",
-    "cloudbilling.googleapis.com",
     "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "datacatalog.googleapis.com",
     "dlp.googleapis.com",
+    "iam.googleapis.com",
     "secretmanager.googleapis.com",
-    "bigquerydatapolicy.googleapis.com",
-    "bigquery.googleapis.com"
+    "serviceusage.googleapis.com",
+    "sqladmin.googleapis.com",
+    "storage-api.googleapis.com",
   ]
 }
 
@@ -122,20 +124,21 @@ module "data_project" {
   deletion_policy         = var.deletion_policy
 
   activate_apis = [
-    "cloudresourcemanager.googleapis.com",
-    "storage-api.googleapis.com",
-    "serviceusage.googleapis.com",
-    "iam.googleapis.com",
-    "bigquery.googleapis.com",
     "accesscontextmanager.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "bigquery.googleapis.com",
     "cloudbilling.googleapis.com",
+    "cloudbuild.googleapis.com",
     "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "compute.googleapis.com",
+    "datacatalog.googleapis.com",
     "dataflow.googleapis.com",
     "dlp.googleapis.com",
-    "datacatalog.googleapis.com",
     "dns.googleapis.com",
-    "compute.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com"
+    "iam.googleapis.com",
+    "serviceusage.googleapis.com",
+    "sqladmin.googleapis.com",
+    "storage-api.googleapis.com",
   ]
 }
