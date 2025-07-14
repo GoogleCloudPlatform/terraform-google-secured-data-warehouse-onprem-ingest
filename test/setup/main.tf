@@ -26,24 +26,25 @@ module "project" {
   deletion_policy   = "DELETE"
 
   activate_apis = [
-    "cloudresourcemanager.googleapis.com",
-    "storage-api.googleapis.com",
-    "serviceusage.googleapis.com",
-    "iam.googleapis.com",
-    "dns.googleapis.com",
-    "pubsub.googleapis.com",
-    "bigquery.googleapis.com",
     "accesscontextmanager.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "bigquery.googleapis.com",
     "cloudbilling.googleapis.com",
+    "cloudbuild.googleapis.com",
     "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "compute.googleapis.com",
+    "datacatalog.googleapis.com",
     "dataflow.googleapis.com",
     "dlp.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "compute.googleapis.com",
+    "dns.googleapis.com",
+    "iam.googleapis.com",
+    "pubsub.googleapis.com",
     "secretmanager.googleapis.com",
-    "datacatalog.googleapis.com"
+    "serviceusage.googleapis.com",
+    "sqladmin.googleapis.com",
+    "storage-api.googleapis.com",
   ]
 }
 
