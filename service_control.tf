@@ -220,6 +220,11 @@ locals {
               "*"
             ]
           },
+          "sqladmin.googleapis.com" = {
+            "methods" = [
+              "*"
+            ]
+          },
         }
       }
     }

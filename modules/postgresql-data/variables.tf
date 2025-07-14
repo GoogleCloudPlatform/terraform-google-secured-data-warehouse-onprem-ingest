@@ -29,6 +29,11 @@ variable "region" {
   type        = string
 }
 
+variable "edition" {
+  description = "The edition of the Cloud SQL instance. Can be \"ENTERPRISE\" or \"ENTERPRISE_PLUS\""
+  type        = string
+}
+
 variable "tier" {
   description = "The tier for the Cloud SQL instance."
   type        = string

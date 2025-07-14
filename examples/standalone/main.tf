@@ -68,6 +68,7 @@ module "secured_data_warehouse_onprem_ingest" {
     database_version            = "17"
     deletion_protection_enabled = !var.delete_contents_on_destroy
     tier                        = "db-f1-micro"
+    edition                     = "ENTERPRISE"
   }
 
   depends_on = [

@@ -161,7 +161,8 @@ module "postgresql_data" {
   project_id          = var.data_project_id
   region              = var.location
   tier                = var.postgresql.tier
-  deletion_protection = var.delete_contents_on_destroy
+  edition             = var.postgresql.edition
+  deletion_protection = !var.delete_contents_on_destroy
 
   database_flags   = var.postgresql.database_flags
   database_version = var.postgresql.database_version

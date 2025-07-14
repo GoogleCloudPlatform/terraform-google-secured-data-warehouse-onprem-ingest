@@ -15,6 +15,24 @@
  */
 locals {
   user_name = "default"
+  iam_users = var.encrypted_data_reader_group == var.plaintext_reader_group ? [
+    {
+      id    = "READER_GROUP"
+      email = var.encrypted_data_reader_group
+      type  = "CLOUD_IAM_GROUP"
+    }
+    ] : [
+    {
+      id    = "PLAINTEXT_READER_GROUP"
+      email = var.plaintext_reader_group
+      type  = "CLOUD_IAM_GROUP"
+    },
+    {
+      id    = "ENCRYPTED_DATA_READER_GROUP"
+      email = var.encrypted_data_reader_group
+      type  = "CLOUD_IAM_GROUP"
+    }
+  ]
 }
 
 module "postgresql" {
@@ -26,6 +44,7 @@ module "postgresql" {
   project_id           = var.project_id
   database_version     = var.database_version
   region               = var.region
+  edition              = var.edition
 
   tier = var.tier
 
@@ -39,25 +58,22 @@ module "postgresql" {
   database_flags = concat(
     [
       {
-        name  = "cloudsql_iam_authentication"
+        name  = "cloudsql.iam_authentication"
         value = "on"
-      }
+      },
+      {
+        name  = "cloudsql.enable_pgaudit"
+        value = "on"
+      },
     ],
     var.database_flags,
   )
   user_name = local.user_name
-  iam_users = [
-    {
-      id    = "PLAINTEXT_READER_GROUP"
-      email = var.plaintext_reader_group
-      type  = "CLOUD_IAM_GROUP"
-    },
-    {
-      id    = "ENCRYPTED_DATA_READER_GROUP"
-      email = var.encrypted_data_reader_group
-      type  = "CLOUD_IAM_GROUP"
-    }
-  ]
+  iam_users = local.iam_users
+  ip_configuration = {
+    ipv4_enabled = true
+    ssl_mode     = "ENCRYPTED_ONLY"
+  }
 }
 
 resource "google_project_iam_member" "instance_users" {

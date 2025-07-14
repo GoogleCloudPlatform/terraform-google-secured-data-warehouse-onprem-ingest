@@ -2,10 +2,10 @@
 
 [FAQ](./docs/FAQ.md) | [Troubleshooting Guide](./docs/TROUBLESHOOTING.md).
 
-This repository contains Terraform configuration modules that allow Google Cloud customers to import data from an on-premises environment or another cloud into a Secured [BigQuery](https://cloud.google.com/bigquery) warehouse.
+This repository contains Terraform configuration modules that allow Google Cloud customers to import data from an on-premises environment or another cloud into a Secured [BigQuery](https://cloud.google.com/bigquery) and a PostgreSQL warehouse.
 This blueprint provides an opinionated architecture and an example on how to:
 
-- Encrypt data located outside of Google Cloud and import it into BigQuery using the [Tink](https://developers.google.com/tink) library.
+- Encrypt data located outside of Google Cloud and import it into BigQuery and PostgreSQL using the [Tink](https://developers.google.com/tink) library.
 - Configure VPC Service Controls to secure the data pipeline and access to confidential data.
 - Configure separation of duties for personas (Google Groups).
 - Set up appropriate security controls (Organization Policies) and Google Cloud Logging to help protect confidential data.
@@ -122,7 +122,7 @@ Additional information related to the inputs and outputs of the module are detai
 | org\_id | GCP Organization ID. | `string` | n/a | yes |
 | perimeter\_additional\_members | The list additional members to be added on perimeter access. Prefix user: (user:email@email.com) or serviceAccount: (serviceAccount:my-service-account@email.com) is required. | `list(string)` | `[]` | no |
 | plaintext\_reader\_group | Google Cloud IAM group that analyzes plaintext reader. | `string` | n/a | yes |
-| postgresql | PostgreSQL configuration. For value details check: <https://registry.terraform.io/modules/terraform-google-modules/sql-db/google/latest/submodules/postgresql>. | <pre>object(<br>    {<br>      deletion_protection_enabled     = optional(bool, true)<br>      tier                            = string<br>      availability_type               = optional(string, null)<br>      maintenance_version             = optional(string, null)<br>      maintenance_window_day          = optional(number, null)<br>      maintenance_window_hour         = optional(number, null)<br>      maintenance_window_update_track = optional(string, null)<br>      database_version                = string<br>      database_flags = optional(<br>        list(<br>          object(<br>            {<br>              name  = string<br>              value = string<br>            }<br>          )<br>        ),<br>        []<br>      )<br>    }<br>  )</pre> | `null` | no |
+| postgresql | PostgreSQL configuration. For value details check: <https://registry.terraform.io/modules/terraform-google-modules/sql-db/google/latest/submodules/postgresql>. | <pre>object(<br>    {<br>      deletion_protection_enabled     = optional(bool, true)<br>      tier                            = string<br>      availability_type               = optional(string, null)<br>      maintenance_version             = optional(string, null)<br>      maintenance_window_day          = optional(number, 1)<br>      maintenance_window_hour         = optional(number, 23)<br>      maintenance_window_update_track = optional(string, null)<br>      edition                         = optional(string, "ENTERPRISE_PLUS")<br>      database_version                = string<br>      database_flags = optional(<br>        list(<br>          object(<br>            {<br>              name  = string<br>              value = string<br>            }<br>          )<br>        ),<br>        []<br>      )<br>    }<br>  )</pre> | `null` | no |
 | pubsub\_resource\_location | The location in which the messages published to Pub/Sub will be persisted. This location cannot be a multi-region. | `string` | `"us-east4"` | no |
 | remove\_owner\_role | (Optional) If set to true, remove all owner roles in all projects in case it has been found in some project. | `bool` | `false` | no |
 | sdx\_project\_number | The Project Number to configure Secure data exchange with egress rule for dataflow templates. Required if using a dataflow job template from a private storage bucket outside of the perimeter. | `string` | `""` | no |
@@ -178,6 +178,8 @@ The following dependencies must be available:
 - [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 or later
 - [Terraform Provider for GCP](https://github.com/terraform-providers/terraform-provider-google) version 4.61 or later
 - [Terraform Provider for GCP Beta](https://github.com/terraform-providers/terraform-provider-google-beta) version 4.61 or later
+
+If you also decide to configure the SQL instance you will need the [PostgreSQL CLI](https://wiki.postgresql.org/wiki/PostgreSQL_Clients#psql).
 
 ### Security Groups
 
@@ -313,6 +315,7 @@ resources created by this module:
 - Identity and Access Management (IAM) API:`iam.googleapis.com`
 - Service Usage API:`serviceusage.googleapis.com`
 - Google Cloud Storage JSON API:`storage-api.googleapis.com`
+- Cloud SQL Admin API: `sqladmin.googleapis.com`
 
 #### The following APIs must be enabled in the project where the service account was created
 
@@ -334,7 +337,6 @@ provision the projects with the necessary APIs enabled.
 
 Refer to the [contribution guidelines](./CONTRIBUTING.md) for
 information on contributing to this module.
-
 
 ## Security Disclosures
 

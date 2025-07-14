@@ -296,6 +296,10 @@ func TestStandalone(t *testing.T) {
 		cmek := queryResp.Rows[0].F[0].V
 		assert.Equal(kmsKeyDataBq, cmek, "CMEK should match")
 
+		// validate SQL instance user
+		sqlInstanceName := standalone.GetStringOutput("postgresql_instance_name")
+		sqlCloudIamGroups := gcloud.Runf(t, "sql users list --project=%s --instance=%s --filter='type:CLOUD_IAM_GROUP'", dataProjectID, sqlInstanceName)
+		assert.Equal(1, len(sqlCloudIamGroups.Array()), fmt.Sprintf("SQL instance %s should contains one Cloud IAM group user", sqlInstanceName))
 	})
 
 	standalone.Test()
