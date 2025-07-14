@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2022-2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,12 +23,14 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/terraform-google-modules/secured-data-warehouse-onprem-ingest/test/integration/testutils"
 	"github.com/tidwall/gjson"
 )
 
@@ -69,6 +71,7 @@ func TestStandalone(t *testing.T) {
 
 	standalone := tft.NewTFBlueprintTest(t,
 		tft.WithVars(vars),
+		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 3, 5*time.Minute),
 	)
 
 	standalone.DefineVerify(func(assert *assert.Assertions) {
@@ -293,6 +296,10 @@ func TestStandalone(t *testing.T) {
 		cmek := queryResp.Rows[0].F[0].V
 		assert.Equal(kmsKeyDataBq, cmek, "CMEK should match")
 
+		// validate SQL instance user
+		sqlInstanceName := standalone.GetStringOutput("postgresql_instance_name")
+		sqlCloudIamGroups := gcloud.Runf(t, "sql users list --project=%s --instance=%s --filter='type:CLOUD_IAM_GROUP'", dataProjectID, sqlInstanceName)
+		assert.Equal(1, len(sqlCloudIamGroups.Array()), fmt.Sprintf("SQL instance %s should contains one Cloud IAM group user", sqlInstanceName))
 	})
 
 	standalone.Test()

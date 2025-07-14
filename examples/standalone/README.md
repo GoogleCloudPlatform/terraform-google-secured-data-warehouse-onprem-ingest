@@ -485,6 +485,7 @@ These outputs can be interesting for security analyst group:
 | kek\_wrapping\_key\_name | The name of kek wrapping key. |
 | kek\_wrapping\_keyring | The kek wrapping keyring. |
 | kek\_wrapping\_keyring\_name | The name of kek wrapping keyring. |
+| postgresql\_instance\_name | PostgreSQL instance name. |
 | pubsub\_writer\_service\_account\_email | The PubSub writer service account email. Should be used to write data to the PubSub topics the data ingestion pipeline reads from. |
 | random\_suffix | Suffix used in the name of resources. |
 | storage\_writer\_service\_account\_email | The Storage writer service account email. Should be used to write data to the buckets the data ingestion pipeline reads from. |
