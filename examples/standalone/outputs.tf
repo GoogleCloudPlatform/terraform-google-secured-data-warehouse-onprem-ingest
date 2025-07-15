@@ -180,3 +180,8 @@ output "subscription_names" {
     module.pubsub_to_bigquery.subscription_names
   )
 }
+
+output "postgresql_instance_name" {
+  description = "PostgreSQL instance name."
+  value       = module.secured_data_warehouse_onprem_ingest.postgresql_instance_name
+}
