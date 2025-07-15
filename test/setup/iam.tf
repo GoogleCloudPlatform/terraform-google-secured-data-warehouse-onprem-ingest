@@ -27,18 +27,19 @@ locals {
   ]
 
   folder_required_roles = [
+    "roles/cloudkms.cryptoOperator",
+    "roles/cloudsql.admin",
+    "roles/compute.networkAdmin",
+    "roles/compute.xpnAdmin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/iam.serviceAccountTokenCreator",
+    "roles/logging.admin",
     "roles/resourcemanager.folderAdmin",
     "roles/resourcemanager.projectCreator",
     "roles/resourcemanager.projectDeleter",
     "roles/resourcemanager.projectIamAdmin",
-    "roles/compute.xpnAdmin",
-    "roles/compute.networkAdmin",
-    "roles/cloudkms.cryptoOperator",
-    "roles/vpcaccess.admin",
-    "roles/logging.admin",
-    "roles/iam.serviceAccountTokenCreator",
-    "roles/iam.serviceAccountAdmin",
     "roles/serviceusage.serviceUsageAdmin",
+    "roles/vpcaccess.admin",
   ]
 
 }
