@@ -59,6 +59,7 @@ module "secured_data_warehouse_onprem_ingest" {
   encrypted_data_reader_group      = var.encrypted_data_reader_group
   plaintext_reader_group           = var.plaintext_reader_group
   access_level_ip_subnetworks      = var.access_level_ip_subnetworks
+  build_project_number             = var.build_project_number
 
   // Set the enable_bigquery_read_roles_in_data_ingestion to true, it will grant to the dataflow controller
   // service account created in the data ingestion project the necessary roles to read from a bigquery table.
