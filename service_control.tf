@@ -169,7 +169,7 @@ locals {
 
   data_ingestion_default_egress_rule_sources_projects = [
     var.data_ingestion_project_number,
-    var.var.build_project_number,
+    var.build_project_number,
   ]
 
   data_ingestion_default_egress_rule_sources = [
@@ -214,7 +214,7 @@ locals {
 
   data_default_ingress_rule_sources_projects = [
     var.data_ingestion_project_number,
-    var.var.build_project_number,
+    var.build_project_number,
   ]
 
   data_default_ingress_rule_sources = [
