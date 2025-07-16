@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,4 +42,10 @@ variable "terraform_service_account" {
 variable "group_email" {
   description = "The group that will be assigned permissions for testing."
   type        = string
+}
+
+variable "build_project_number" {
+  description = "Project number used to build the infrastructure."
+  type        = string
+  default     = ""
 }

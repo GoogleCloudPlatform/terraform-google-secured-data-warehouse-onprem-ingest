@@ -84,6 +84,12 @@ variable "sdx_project_number" {
   default     = ""
 }
 
+variable "build_project_number" {
+  description = "Project number used to build the infrastructure."
+  type        = string
+  default     = ""
+}
+
 variable "add_project_to_data_ingestion_perimeter" {
   description = "If the data ingestion project should be added to the data ingestion perimeter."
   type        = bool

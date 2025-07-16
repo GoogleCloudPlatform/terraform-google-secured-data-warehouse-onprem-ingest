@@ -85,6 +85,7 @@ Additional information related to the inputs and outputs of the module are detai
 | bucket\_class | The storage class for the bucket being provisioned. | `string` | `"STANDARD"` | no |
 | bucket\_lifecycle\_rules | List of lifecycle rules to configure. Format is the same as described in provider documentation https://www.terraform.io/docs/providers/google/r/storage_bucket.html#lifecycle_rule except condition.matches\_storage\_class should be a comma delimited string. | <pre>set(object({<br>    action    = any<br>    condition = any<br>  }))</pre> | <pre>[<br>  {<br>    "action": {<br>      "type": "Delete"<br>    },<br>    "condition": {<br>      "age": 30,<br>      "matches_storage_class": "STANDARD",<br>      "with_state": "ANY"<br>    }<br>  }<br>]</pre> | no |
 | bucket\_name | The name of the bucket being provisioned. | `string` | n/a | yes |
+| build\_project\_number | Project number used to build the infrastructure. | `string` | `""` | no |
 | cmek\_keyring\_name | The Keyring prefix name for the KMS Customer Managed Encryption Keys being provisioned. | `string` | n/a | yes |
 | custom\_restricted\_services | The list of custom Google services to be protected by the VPC-SC perimeters. | `list(string)` | `[]` | no |
 | data\_analyst\_group | Google Cloud IAM group that analyzes the data in the warehouse. | `string` | n/a | yes |

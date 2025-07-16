@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2023-2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,4 +40,5 @@ module "example" {
   security_administrator_group     = var.group_email
   encrypted_data_reader_group      = var.group_email
   plaintext_reader_group           = var.group_email
+  build_project_number             = var.build_project_number
 }

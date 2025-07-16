@@ -167,6 +167,15 @@ locals {
     # You can add here default ingress policies if necessary
   ]
 
+  data_ingestion_default_egress_rule_sources_projects = [
+    var.data_ingestion_project_number,
+    var.var.build_project_number,
+  ]
+
+  data_ingestion_default_egress_rule_sources = [
+    for project_number in local.data_ingestion_default_egress_rule_sources_projects : "projects/${project_number}" if project_number != ""
+  ]
+
   data_ingestion_default_egress_rule = var.sdx_project_number == "" ? [] : [
     {
       "from" = {
@@ -175,6 +184,7 @@ locals {
           ["serviceAccount:${var.terraform_service_account}"],
           ["serviceAccount:${module.data_ingestion_sa.dataflow_controller_service_account_email}"]
         ))
+        "sources" = local.data_ingestion_default_egress_rule_sources
       },
       "to" = {
         "resources" = ["projects/${var.sdx_project_number}"]
@@ -202,6 +212,15 @@ locals {
     # You can add here default egress policies if necessary
   ]
 
+  data_default_ingress_rule_sources_projects = [
+    var.data_ingestion_project_number,
+    var.var.build_project_number,
+  ]
+
+  data_default_ingress_rule_sources = [
+    for project_number in local.data_default_ingress_rule_sources_projects : "projects/${project_number}" if project_number != ""
+  ]
+
   data_default_ingress_rule = var.sdx_project_number == "" ? [] : [
     {
       "from" = {
@@ -209,7 +228,7 @@ locals {
           ["serviceAccount:service-${var.data_ingestion_project_number}@gcp-sa-pubsub.iam.gserviceaccount.com"]
         )),
         "sources" = {
-          "resources" = ["projects/${var.data_ingestion_project_number}"]
+          "resources" = local.data_default_ingress_rule_sources
         }
       },
       "to" = {
