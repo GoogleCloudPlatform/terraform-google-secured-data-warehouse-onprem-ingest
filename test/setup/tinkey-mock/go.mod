@@ -1,6 +1,6 @@
 module tinkey-mock
 
-go 1.17
+go 1.23.0
 
 require github.com/google/tink/go v1.7.0
 
@@ -12,7 +12,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/api v0.70.0 // indirect
