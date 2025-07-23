@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2023-2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/tink/go/aead"
-	"github.com/google/tink/go/core/registry"
-	"github.com/google/tink/go/integration/gcpkms"
-	"github.com/google/tink/go/keyset"
-	"github.com/google/tink/go/tink"
+	"github.com/tink-crypto/tink-go-gcpkms/v2/integration/gcpkms"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/core/registry"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/tink-crypto/tink-go/v2/tink"
 )
 
 var (
@@ -147,7 +147,7 @@ func main() {
 	outJsonWriter := json.NewEncoder(out)
 	for {
 		var jsonLine map[string]string
-		if err := inReader.Decode(&jsonLine); 	err == io.EOF {
+		if err := inReader.Decode(&jsonLine); err == io.EOF {
 			break // done decoding file
 		} else if err != nil {
 			log.Fatal(err)
