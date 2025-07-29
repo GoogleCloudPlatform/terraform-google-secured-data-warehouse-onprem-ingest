@@ -42,3 +42,7 @@ output "billing_account" {
 output "group_email" {
   value = "test-gcp-qa@test.blueprints.joonix.net"
 }
+
+output "access_context_manager_policy_id" {
+  value = google_access_context_manager_access_policy.main.id
+}
