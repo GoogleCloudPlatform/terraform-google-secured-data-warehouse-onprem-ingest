@@ -57,12 +57,6 @@ resource "google_folder" "int_test" {
   deletion_protection = false
 }
 
-resource "google_access_context_manager_access_policy" "main" {
-  title  = "Scoped test access policy"
-  scopes = [google_folder.int_test.id]
-  parent = "organizations/${var.org_id}"
-}
-
 data "google_access_context_manager_access_policy" "main" {
   parent = "organizations/${var.org_id}"
 }
