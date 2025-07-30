@@ -62,3 +62,7 @@ resource "google_access_context_manager_access_policy" "main" {
   scopes = [google_folder.int_test.id]
   parent = "organizations/${var.org_id}"
 }
+
+data "google_access_context_manager_access_policy" "main" {
+  parent = "organizations/${var.org_id}"
+}

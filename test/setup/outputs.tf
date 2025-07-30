@@ -44,5 +44,5 @@ output "group_email" {
 }
 
 output "access_context_manager_policy_id" {
-  value = google_access_context_manager_access_policy.main.id
+  value = data.google_access_context_manager_access_policy.main.name
 }
