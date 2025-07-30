@@ -34,6 +34,11 @@ locals {
     "serviceAccount:${var.terraform_service_account}"
   ], var.perimeter_additional_members))
 
+  data_governance_egress_sources = concat(
+    ["projects/${var.data_ingestion_project_number}"],
+    var.build_project_number == "" ? [] : ["projects/${var.build_project_number}"],
+  )
+
   supported_restricted_service = [
     "accessapproval.googleapis.com",
     "adsdatahub.googleapis.com",
@@ -174,7 +179,10 @@ locals {
           var.data_ingestion_dataflow_deployer_identities,
           ["serviceAccount:${var.terraform_service_account}"],
           ["serviceAccount:${module.data_ingestion_sa.dataflow_controller_service_account_email}"]
-        ))
+        )),
+        "sources" = {
+          "resources" = local.data_governance_egress_sources
+        }
       },
       "to" = {
         "resources" = ["projects/${var.sdx_project_number}"]

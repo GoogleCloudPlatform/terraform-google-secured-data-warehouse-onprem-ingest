@@ -78,6 +78,12 @@ variable "data_project_number" {
   type        = string
 }
 
+variable "build_project_number" {
+  description = "The project number of the build project."
+  type        = string
+  default     = ""
+}
+
 variable "sdx_project_number" {
   description = "The Project Number to configure Secure data exchange with egress rule for dataflow templates. Required if using a dataflow job template from a private storage bucket outside of the perimeter."
   type        = string

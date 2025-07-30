@@ -33,6 +33,7 @@ module "secured_data_warehouse_onprem_ingest" {
   data_ingestion_project_id        = module.harness_projects.data_ingestion_project_id
   data_ingestion_project_number    = module.harness_projects.data_ingestion_project_number
   sdx_project_number               = module.harness_artifact_registry_project.sdx_project_number
+  build_project_number             = var.build_project_number
   terraform_service_account        = var.terraform_service_account
   access_context_manager_policy_id = var.access_context_manager_policy_id
   bucket_name                      = "standalone-data-ing"

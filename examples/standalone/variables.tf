@@ -95,6 +95,12 @@ variable "data_project_name" {
   }
 }
 
+variable "build_project_number" {
+  description = "The project number of the build project."
+  type        = string
+  default     = ""
+}
+
 variable "security_administrator_group" {
   description = "Google Cloud IAM group that administers security configurations in the organization(org policies, KMS, VPC service perimeter)."
   type        = string

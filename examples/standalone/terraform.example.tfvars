@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-org_id          = "000000000000"
-folder_id       = "000000000000"
-billing_account = "000000-000000-000000"
+org_id               = "000000000000"
+folder_id            = "000000000000"
+billing_account      = "000000-000000-000000"
+build_project_number = "000000000000"
 
 access_context_manager_policy_id = "000000000000"
 
