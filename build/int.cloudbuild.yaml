@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2019-2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ steps:
   env:
   - 'TF_VAR_folder_id=$_FOLDER_ID'
   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
-  - 'TF_VAR_build_project_number=$PROJECT_NUMBER'
 
 - id: create-standalone
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -52,4 +51,5 @@ substitutions:
 options:
   env:
   - 'TF_VAR_org_id=$_ORG_ID'
-
+  - 'TF_VAR_build_project_id=$PROJECT_ID'
+  - 'TF_VAR_build_project_number=$PROJECT_NUMBER'

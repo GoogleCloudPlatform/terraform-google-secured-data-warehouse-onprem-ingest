@@ -84,6 +84,12 @@ variable "sdx_project_number" {
   default     = ""
 }
 
+variable "build_project_number" {
+  description = "Project number used to build the infrastructure."
+  type        = string
+  default     = ""
+}
+
 variable "add_project_to_data_ingestion_perimeter" {
   description = "If the data ingestion project should be added to the data ingestion perimeter."
   type        = bool
@@ -372,4 +378,38 @@ variable "enable_bigquery_read_roles_in_data_ingestion" {
   description = "(Optional) If set to true, it will grant to the dataflow controller service account created in the data ingestion project the necessary roles to read from a bigquery table."
   type        = bool
   default     = false
+}
+
+/**
+*PostgreSQL variables
+*/
+
+variable "postgresql" {
+  type = object(
+    {
+      deletion_protection_enabled     = optional(bool, true)
+      tier                            = string
+      availability_type               = optional(string, null)
+      maintenance_version             = optional(string, null)
+      maintenance_window_day          = optional(number, 1)
+      maintenance_window_hour         = optional(number, 23)
+      maintenance_window_update_track = optional(string, null)
+      edition                         = optional(string, "ENTERPRISE_PLUS")
+      database_version                = string
+      database_flags = optional(
+        list(
+          object(
+            {
+              name  = string
+              value = string
+            }
+          )
+        ),
+        []
+      )
+    }
+  )
+  nullable    = true
+  default     = null
+  description = "PostgreSQL configuration. For value details check: <https://registry.terraform.io/modules/terraform-google-modules/sql-db/google/latest/submodules/postgresql>."
 }

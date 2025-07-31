@@ -20,6 +20,14 @@ locals {
   deletion_policy = var.delete_contents_on_destroy ? "DELETE" : "PREVENT"
 }
 
+resource "time_sleep" "wait_harness_projects_creation" {
+  depends_on = [
+    module.harness_projects,
+  ]
+
+  create_duration = "900s"
+}
+
 module "secured_data_warehouse_onprem_ingest" {
   source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google"
   version = "~> 0.1"
@@ -51,12 +59,21 @@ module "secured_data_warehouse_onprem_ingest" {
   encrypted_data_reader_group      = var.encrypted_data_reader_group
   plaintext_reader_group           = var.plaintext_reader_group
   access_level_ip_subnetworks      = var.access_level_ip_subnetworks
+  build_project_number             = var.build_project_number
 
   // Set the enable_bigquery_read_roles_in_data_ingestion to true, it will grant to the dataflow controller
   // service account created in the data ingestion project the necessary roles to read from a bigquery table.
   enable_bigquery_read_roles_in_data_ingestion = true
 
+  postgresql = {
+    database_version            = "17"
+    deletion_protection_enabled = !var.delete_contents_on_destroy
+    tier                        = "db-f1-micro"
+    edition                     = "ENTERPRISE"
+  }
+
   depends_on = [
-    google_project_iam_binding.remove_owner_role
+    google_project_iam_binding.remove_owner_role,
+    time_sleep.wait_60_seconds_harness,
   ]
 }
