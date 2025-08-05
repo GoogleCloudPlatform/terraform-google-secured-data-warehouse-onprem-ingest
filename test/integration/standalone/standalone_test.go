@@ -26,17 +26,10 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 )
-
-func getPolicyID(t *testing.T, orgID string) string {
-	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
-	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
-	return op.String()
-}
 
 func getSAToken(t *testing.T, sa string) string {
 	cmd := gcloud.Runf(t, "auth print-access-token --impersonate-service-account=%s", sa)
@@ -60,16 +53,7 @@ func getHttpResponse(t *testing.T, method, url, token string, body io.Reader) []
 }
 
 func TestStandalone(t *testing.T) {
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(t, orgID)
-
-	vars := map[string]interface{}{
-		"access_context_manager_policy_id": policyID,
-	}
-
-	standalone := tft.NewTFBlueprintTest(t,
-		tft.WithVars(vars),
-	)
+	standalone := tft.NewTFBlueprintTest(t)
 
 	standalone.DefineVerify(func(assert *assert.Assertions) {
 

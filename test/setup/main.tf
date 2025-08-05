@@ -56,3 +56,7 @@ resource "google_folder" "int_test" {
   parent              = "folders/${var.folder_id}"
   deletion_protection = false
 }
+
+data "google_access_context_manager_access_policy" "main" {
+  parent = "organizations/${var.org_id}"
+}
