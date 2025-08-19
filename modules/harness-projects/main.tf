@@ -100,8 +100,9 @@ resource "google_project_service_identity" "data_governance_service_agents" {
 
   for_each = toset(
     [
-      "storage.googleapis.com",
       "cloudkms.googleapis.com",
+      "logging.googleapis.com",
+      "storage.googleapis.com",
     ]
   )
   project = module.data_governance_project.project_id
