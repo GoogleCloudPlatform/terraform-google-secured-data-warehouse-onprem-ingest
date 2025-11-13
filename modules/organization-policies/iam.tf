@@ -24,7 +24,7 @@ locals {
 
 module "boolean_iam_org_policies" {
   source   = "terraform-google-modules/org-policy/google"
-  version  = "7.0.0"
+  version  = "7.2.0"
   for_each = local.boolean_iam_org_policies
 
   policy_for  = "project"
