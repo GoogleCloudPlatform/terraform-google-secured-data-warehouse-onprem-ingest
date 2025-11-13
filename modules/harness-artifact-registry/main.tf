@@ -66,7 +66,7 @@ resource "random_id" "project_id_suffix" {
 
 module "external_flex_template_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "18.0"
+  version = "18.2"
 
   name                    = local.project_name
   random_project_id       = "true"

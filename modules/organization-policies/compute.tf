@@ -27,7 +27,7 @@ locals {
 
 module "boolean_compute_org_policies" {
   source   = "terraform-google-modules/org-policy/google"
-  version  = "7.0.0"
+  version  = "7.2.0"
   for_each = local.boolean_compute_org_policies
 
   policy_for  = "project"
@@ -39,7 +39,7 @@ module "boolean_compute_org_policies" {
 
 module "protocol_forwarding_creation" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "7.0.0"
+  version = "7.2.0"
 
   policy_for        = "project"
   project_id        = var.project_id
@@ -51,7 +51,7 @@ module "protocol_forwarding_creation" {
 
 module "restrict_shared_vpc_subnetworks_policy" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "7.0.0"
+  version = "7.2.0"
   count   = length(var.trusted_shared_vpc_subnetworks) > 0 ? 1 : 0
 
   policy_for        = "project"
@@ -64,7 +64,7 @@ module "restrict_shared_vpc_subnetworks_policy" {
 
 module "vm_external_ip_access" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "7.0.0"
+  version = "7.2.0"
 
   policy_for  = "project"
   project_id  = var.project_id
