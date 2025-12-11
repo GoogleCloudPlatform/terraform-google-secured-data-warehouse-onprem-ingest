@@ -79,7 +79,7 @@ resource "google_storage_bucket_iam_member" "cloudfunction_bucket" {
 //pub/sub data ingestion topic
 module "data_ingestion_topic" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "8.0"
+  version = "8.3"
 
   project_id             = var.data_ingestion_project_id
   topic_labels           = var.labels
