@@ -8,6 +8,18 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/compare/v0.1.0...v0.2.0) (2025-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **TPG>=5.43/TF>=1.3:** Bumped TPG and TF versions to fix standalone example ([#73](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/issues/73))
+
+### Bug Fixes
+
+* **TPG>=5.43/TF>=1.3:** Bumped TPG and TF versions to fix standalone example ([#73](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/issues/73)) ([af18560](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/commit/af185608a0864f66e165f99823289fb252160a16))
+* vpc-sc egress policy source ([#84](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/issues/84)) ([bc22d84](https://github.com/GoogleCloudPlatform/terraform-google-secured-data-warehouse-onprem-ingest/commit/bc22d84c2792dfd55c6186e8773ad5f888da78ac))
+
 ## 0.1.0 (2023-08-15)
 
 

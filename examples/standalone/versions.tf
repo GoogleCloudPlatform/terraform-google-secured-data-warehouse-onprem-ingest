@@ -44,6 +44,6 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/secured-data-warehouse-onprem-ingest/v0.1.0"
+    module_name = "blueprints/terraform/secured-data-warehouse-onprem-ingest/v0.2.0"
   }
 }
