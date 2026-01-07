@@ -87,7 +87,7 @@ module "cmek" {
 
 module "bigquery_dlp_output_data" {
   source  = "terraform-google-modules/bigquery/google"
-  version = "10.0.1"
+  version = "10.2.1"
 
   project_id                  = var.data_governance_project_id
   dataset_id                  = var.dlp_output_dataset
