@@ -54,7 +54,7 @@ module "cmek" {
 
 module "logging_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "10.0.0"
+  version = "12.3.0"
 
   count = var.create_bucket ? 1 : 0
 

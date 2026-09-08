@@ -21,7 +21,7 @@ resource "random_id" "suffix" {
 //storage data ingestion bucket
 module "data_ingestion_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "10.0.0"
+  version = "12.3.0"
 
   project_id      = var.data_ingestion_project_id
   labels          = var.labels
@@ -38,7 +38,7 @@ module "data_ingestion_bucket" {
 
 module "dataflow_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "10.0.0"
+  version = "12.3.0"
 
   project_id    = var.data_ingestion_project_id
   labels        = var.labels
@@ -55,7 +55,7 @@ module "dataflow_bucket" {
 
 module "cloudfunction_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 10.0"
+  version = "~> 12.0"
 
   project_id    = var.data_ingestion_project_id
   labels        = var.labels
