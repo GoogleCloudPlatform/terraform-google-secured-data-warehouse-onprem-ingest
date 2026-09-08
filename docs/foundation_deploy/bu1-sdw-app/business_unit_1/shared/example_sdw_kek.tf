@@ -58,7 +58,7 @@ resource "random_string" "suffix" {
 // encrypted table example
 module "kek_wrapping_key" {
   source  = "terraform-google-modules/kms/google"
-  version = "4.0.0"
+  version = "4.1.2"
 
   project_id           = local.data_governance_project_id
   labels               = { environment = "dev" }

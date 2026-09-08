@@ -51,7 +51,7 @@ locals {
 //Dataflow controller service account
 module "dataflow_controller_service_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.5.0"
+  version = "4.7.0"
 
   project_id   = var.data_ingestion_project_id
   names        = ["sa-dataflow-controller"]
@@ -99,7 +99,7 @@ resource "google_service_account" "pubsub_writer_service_account" {
 // Cloud Function service account
 module "cloudfunction_controller_service_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.5"
+  version = "4.7"
 
   project_id   = var.data_ingestion_project_id
   names        = ["sa-cloudfunction-controller"]

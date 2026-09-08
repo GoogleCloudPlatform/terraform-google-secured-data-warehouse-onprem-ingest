@@ -229,7 +229,7 @@ resource "google_bigquery_table" "credit_card" {
 */
 module "kek_wrapping_key" {
   source  = "terraform-google-modules/kms/google"
-  version = "4.0.0"
+  version = "4.1.2"
 
   project_id           = module.harness_projects.data_governance_project_id
   labels               = { environment = "dev" }
