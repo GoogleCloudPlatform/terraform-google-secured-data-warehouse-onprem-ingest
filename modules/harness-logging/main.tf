@@ -69,7 +69,7 @@ module "logging_bucket" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "10.0.0"
+  version = "11.1.0"
 
   for_each = var.projects_ids
 
