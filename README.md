@@ -31,7 +31,7 @@ Basic usage of this module is as follows:
 ```hcl
 module "secured_data_warehouse" {
   source  = "GoogleCloudPlatform/secured-data-warehouse-onprem-ingest/google"
-  version = "~> 0.1"
+  version = "~> 0.2"
 
   org_id                           = ORG_ID
   data_governance_project_id       = DATA_GOVERNANCE_PROJECT_ID
