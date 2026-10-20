@@ -17,7 +17,7 @@
 // Creates a BigQuery dataset with Customer-Managed Encryption Keys (CMEK)
 module "bigquery_data" {
   source  = "terraform-google-modules/bigquery/google"
-  version = "10.0.1"
+  version = "10.2.1"
 
   project_id                  = var.project_id
   dataset_id                  = var.dataset_id
